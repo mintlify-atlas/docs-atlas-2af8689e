@@ -1,0 +1,105 @@
+{
+  "projectType": "cli-tool",
+  "projectName": "MapToPoster",
+  "projectDescription": "Generate beautiful, minimalist map posters for any city in the world using OpenStreetMap data.",
+  "theme": "willow",
+  "primaryColor": "#d3fa63",
+  "lightColor": "#8c9454",
+  "darkColor": "#2e1e3c",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              "usage/basic-usage",
+              "usage/command-reference",
+              "usage/resolution-guide",
+              "usage/distance-guide"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/themes",
+              "guides/multilingual",
+              "guides/custom-themes",
+              "guides/advanced-examples"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "examples/gallery",
+              "examples/waterfront-cities",
+              "examples/grid-patterns",
+              "examples/organic-cities"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "API",
+            "pages": [
+              "reference/core-functions",
+              "reference/theme-schema",
+              "reference/font-management"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "reference/architecture",
+              "reference/contributing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Generate map posters for any city worldwide",
+    "17 built-in themes (terracotta, noir, blueprint, etc.)",
+    "Multilingual support with Google Fonts integration",
+    "Customizable dimensions and map radius",
+    "OpenStreetMap data integration via OSMnx",
+    "Road hierarchy visualization with different colors/widths",
+    "Water features and parks rendering",
+    "Custom coordinate override support",
+    "PNG, SVG, and PDF export formats",
+    "Local caching for offline usage"
+  ],
+  "publicApiSurface": [
+    "create_map_poster.py --city <city> --country <country>",
+    "--theme/-t <theme_name>",
+    "--distance/-d <meters>",
+    "--width/-W <inches>",
+    "--height/-H <inches>",
+    "--display-city/-dc <name>",
+    "--display-country/-dC <name>",
+    "--font-family <google_font_name>",
+    "--latitude/-lat <degrees>",
+    "--longitude/-long <degrees>",
+    "--list-themes",
+    "--all-themes",
+    "--format <png|svg|pdf>",
+    "create_poster()",
+    "load_theme()",
+    "get_coordinates()",
+    "download_google_font()",
+    "load_fonts()"
+  ]
+}
