@@ -1,0 +1,287 @@
+---
+title: Installation
+description: Install MapToPoster using uv (recommended) or traditional pip with virtual environments
+---
+
+MapToPoster requires Python 3.11 or higher. You can install it using **uv** (recommended for automatic dependency management) or **pip** with a virtual environment.
+
+## Prerequisites
+
+Before installing MapToPoster, ensure you have:
+
+- **Python 3.11+** installed on your system
+- **Git** (to clone the repository)
+- Internet connection (for downloading map data from OpenStreetMap)
+
+<Warning>
+  MapToPoster requires Python 3.11 or higher. Check your version with `python --version` or `python3 --version`.
+</Warning>
+
+## Installation Methods
+
+<Tabs>
+  <Tab title="uv (Recommended)">
+    ### Install with uv
+
+    [uv](https://docs.astral.sh/uv/) is a fast Python package installer and resolver that automatically manages virtual environments for you.
+
+    <Steps>
+      <Step title="Install uv">
+        If you don't have uv installed, install it first:
+
+        <CodeGroup>
+        ```bash macOS/Linux
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        ```
+
+        ```bash Windows
+        powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+        ```
+
+        ```bash With pip
+        pip install uv
+        ```
+        </CodeGroup>
+      </Step>
+
+      <Step title="Clone the repository">
+        ```bash
+        git clone https://github.com/yourusername/maptoposter.git
+        cd maptoposter
+        ```
+      </Step>
+
+      <Step title="Run with uv">
+        The first run automatically creates a virtual environment and installs all dependencies:
+
+        ```bash
+        uv run ./create_map_poster.py --city "Paris" --country "France"
+        ```
+
+        <Note>
+          uv automatically creates and manages the virtual environment. No need to manually activate it!
+        </Note>
+      </Step>
+
+      <Step title="(Optional) Sync dependencies explicitly">
+        To install dependencies using locked versions before running:
+
+        ```bash
+        uv sync --locked
+        uv run ./create_map_poster.py --city "Paris" --country "France"
+        ```
+      </Step>
+    </Steps>
+
+    ### Why uv?
+
+    - **Automatic environment management**: No need to manually create/activate virtual environments
+    - **Fast dependency resolution**: 10-100x faster than pip
+    - **Deterministic installs**: Lock file ensures reproducible builds
+    - **Simple workflow**: Just prefix commands with `uv run`
+
+  </Tab>
+
+  <Tab title="pip + venv">
+    ### Install with pip
+
+    Traditional installation using Python's built-in venv and pip.
+
+    <Steps>
+      <Step title="Clone the repository">
+        ```bash
+        git clone https://github.com/yourusername/maptoposter.git
+        cd maptoposter
+        ```
+      </Step>
+
+      <Step title="Create virtual environment">
+        <CodeGroup>
+        ```bash macOS/Linux
+        python3 -m venv .venv
+        source .venv/bin/activate
+        ```
+
+        ```bash Windows (PowerShell)
+        python -m venv .venv
+        .venv\Scripts\Activate.ps1
+        ```
+
+        ```bash Windows (Command Prompt)
+        python -m venv .venv
+        .venv\Scripts\activate.bat
+        ```
+        </CodeGroup>
+      </Step>
+
+      <Step title="Install dependencies">
+        ```bash
+        pip install -r requirements.txt
+        ```
+
+        This installs all required packages:
+        - **osmnx** (2.0.7): OpenStreetMap data fetching
+        - **matplotlib** (3.10.8): Rendering and visualization
+        - **geopandas** (1.1.2): Geographic data processing
+        - **geopy** (2.4.1): Geocoding
+        - **requests** (2.32.5): Google Fonts downloads
+        - And other dependencies
+      </Step>
+
+      <Step title="Verify installation">
+        ```bash
+        python create_map_poster.py --list-themes
+        ```
+
+        You should see a list of 17 available themes.
+      </Step>
+    </Steps>
+
+    <Warning>
+      Remember to activate your virtual environment every time you work with MapToPoster:
+      ```bash
+      source .venv/bin/activate  # macOS/Linux
+      .venv\Scripts\activate     # Windows
+      ```
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Verify Installation
+
+Test that everything is working correctly:
+
+<CodeGroup>
+```bash With uv
+uv run ./create_map_poster.py --list-themes
+```
+
+```bash With pip
+python create_map_poster.py --list-themes
+```
+</CodeGroup>
+
+You should see output listing all available themes:
+
+```text
+Available Themes:
+------------------------------------------------------------
+  terracotta
+    Terracotta
+    Mediterranean warmth - burnt orange and clay tones on cream
+
+  noir
+    Noir
+    Pure black background, white roads
+
+  midnight_blue
+    Midnight Blue
+    Navy background with gold roads
+
+  ...
+```
+
+## Directory Structure
+
+After installation, your project structure should look like this:
+
+```text
+maptoposter/
+├── create_map_poster.py    # Main CLI script
+├── font_management.py      # Font loading and Google Fonts
+├── requirements.txt        # pip dependencies
+├── pyproject.toml         # Project metadata
+├── uv.lock                # uv lock file (if using uv)
+├── themes/                # 17 theme JSON files
+│   ├── terracotta.json
+│   ├── noir.json
+│   ├── midnight_blue.json
+│   └── ...
+├── fonts/                 # Default Roboto fonts
+│   ├── Roboto-Bold.ttf
+│   ├── Roboto-Light.ttf
+│   └── cache/             # Downloaded Google Fonts (auto-created)
+├── posters/               # Generated posters (auto-created)
+└── cache/                 # Cached map data (auto-created)
+```
+
+## Dependency Overview
+
+MapToPoster uses the following key dependencies:
+
+<CardGroup cols={2}>
+  <Card title="osmnx 2.0.7" icon="map">
+    Fetches street networks and geographic features from OpenStreetMap
+  </Card>
+  
+  <Card title="matplotlib 3.10.8" icon="chart-line">
+    Renders high-quality poster graphics with precise control over styling
+  </Card>
+  
+  <Card title="geopandas 1.1.2" icon="globe">
+    Handles geographic data structures and coordinate projections
+  </Card>
+  
+  <Card title="geopy 2.4.1" icon="location-dot">
+    Geocodes city names to latitude/longitude coordinates
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Python version error">
+    MapToPoster requires Python 3.11+. Check your version:
+    
+    ```bash
+    python --version
+    ```
+    
+    If you have multiple Python versions, try:
+    ```bash
+    python3.11 -m venv .venv
+    ```
+  </Accordion>
+
+  <Accordion title="GEOS library not found">
+    On some systems, you may need to install GEOS separately:
+    
+    <CodeGroup>
+    ```bash Ubuntu/Debian
+    sudo apt-get install libgeos-dev
+    ```
+    
+    ```bash macOS
+    brew install geos
+    ```
+    
+    ```bash Fedora
+    sudo dnf install geos-devel
+    ```
+    </CodeGroup>
+  </Accordion>
+
+  <Accordion title="SSL certificate errors">
+    If you encounter SSL errors when downloading fonts or map data:
+    
+    ```bash
+    pip install --upgrade certifi
+    ```
+  </Accordion>
+
+  <Accordion title="Memory errors with large cities">
+    For very large metropolitan areas or large distance values (>20km), you may need to:
+    
+    - Reduce the `--distance` parameter
+    - Close other applications to free up memory
+    - Use a smaller output size (`--width` and `--height`)
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that MapToPoster is installed, you're ready to create your first poster!
+
+<Card title="Quick Start Guide" icon="rocket" href="/quickstart">
+  Follow the quickstart tutorial to generate your first map poster
+</Card>

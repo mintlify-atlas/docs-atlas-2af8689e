@@ -1,0 +1,404 @@
+---
+title: Distance Guide
+description: Choose the optimal map radius distance for different city types and layouts
+---
+
+## Understanding Distance
+
+The `--distance` (or `-d`) flag controls the **map radius in meters** from the center point. This determines how much of the city is visible on your poster.
+
+```bash
+python create_map_poster.py -c "Paris" -C "France" -d 10000
+```
+
+**Default**: 18,000 meters (18km radius)
+
+<Note>
+The distance represents the radius from the center point, not the diameter. The actual coverage area is a circle with this radius.
+</Note>
+
+## Quick Reference
+
+| Distance Range | Best For | Example Cities |
+|----------------|----------|----------------|
+| **4,000-6,000m** | Small cities, dense centers, high detail | Venice, Marrakech medina, Amsterdam center |
+| **8,000-12,000m** | Medium cities, downtown focus, iconic districts | Paris, Barcelona, Manhattan |
+| **15,000-20,000m** | Large metros, full city view, sprawling layout | Tokyo, Mumbai, Los Angeles |
+
+## Distance by City Type
+
+### Small / Dense Cities (4,000-6,000m)
+
+Perfect for capturing intricate street patterns in compact areas.
+
+<CodeGroup>
+```bash Venice - Canal Network
+python create_map_poster.py \
+  -c "Venice" -C "Italy" \
+  -t blueprint -d 4000
+# Captures the entire historic center with canal detail
+```
+
+```bash Marrakech - Medina Maze
+python create_map_poster.py \
+  -c "Marrakech" -C "Morocco" \
+  -t terracotta -d 5000
+# Shows the dense, winding medina streets
+```
+
+```bash Amsterdam - Canal Rings
+python create_map_poster.py \
+  -c "Amsterdam" -C "Netherlands" \
+  -t ocean -d 6000
+# Displays the iconic concentric canal pattern
+```
+</CodeGroup>
+
+**Why small distances?**
+- Captures fine-grained street patterns
+- Shows architectural details
+- Perfect for walkable historic centers
+- Emphasizes unique urban layouts
+
+### Medium Cities (8,000-12,000m)
+
+Ideal for focused downtown areas and iconic districts.
+
+<CodeGroup>
+```bash Paris - Haussmann Boulevards
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -t pastel_dream -d 10000
+# Shows the radial Haussmann street pattern
+```
+
+```bash Barcelona - Eixample Grid
+python create_map_poster.py \
+  -c "Barcelona" -C "Spain" \
+  -t warm_beige -d 8000
+# Captures the famous chamfered grid
+```
+
+```bash New York - Manhattan Grid
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -t noir -d 12000
+# Shows the iconic Manhattan street grid
+```
+
+```bash San Francisco - Peninsula
+python create_map_poster.py \
+  -c "San Francisco" -C "USA" \
+  -t sunset -d 10000
+# Captures the peninsula with hills and grid
+```
+</CodeGroup>
+
+**Why medium distances?**
+- Balances coverage with detail
+- Shows recognizable landmarks and districts
+- Captures the "heart" of major cities
+- Good for cities with distinct downtown cores
+
+### Large Metropolitan Areas (15,000-20,000m)
+
+For sprawling cities and comprehensive coverage.
+
+<CodeGroup>
+```bash Tokyo - Urban Sprawl
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -t japanese_ink -d 15000
+# Shows the vast, organic street network
+```
+
+```bash Mumbai - Coastal Peninsula
+python create_map_poster.py \
+  -c "Mumbai" -C "India" \
+  -t contrast_zones -d 18000
+# Captures the full peninsula with coastline
+```
+
+```bash Dubai - Coastal Development
+python create_map_poster.py \
+  -c "Dubai" -C "UAE" \
+  -t midnight_blue -d 15000
+# Shows Palm Jumeirah and coastline
+```
+
+```bash Los Angeles - Basin View
+python create_map_poster.py \
+  -c "Los Angeles" -C "USA" \
+  -t sunset -d 20000
+# Captures the sprawling LA basin
+```
+</CodeGroup>
+
+**Why large distances?**
+- Shows the full scale of megacities
+- Captures multiple districts at once
+- Reveals overall urban morphology
+- Good for cities without a single center
+
+## Distance by Urban Pattern
+
+### Grid Pattern Cities
+
+Cities with regular street grids look great at medium distances.
+
+```bash
+# Manhattan, NYC - Iconic grid
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+
+# Barcelona - Eixample district
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+
+# Chicago - Urban grid
+python create_map_poster.py -c "Chicago" -C "USA" -t contrast_zones -d 12000
+```
+
+**Recommended**: 8,000-12,000m
+
+### Radial Pattern Cities
+
+Cities with star/radial patterns shine at medium distances.
+
+```bash
+# Paris - Haussmann boulevards radiating from Arc de Triomphe
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 10000
+
+# Moscow - Ring road system
+python create_map_poster.py -c "Moscow" -C "Russia" -t noir -d 12000
+
+# Washington DC - L'Enfant Plan
+python create_map_poster.py -c "Washington" -C "USA" -t blueprint -d 10000
+```
+
+**Recommended**: 8,000-12,000m
+
+### Organic / Historic Cities
+
+Cities with medieval or organic layouts need smaller distances for detail.
+
+```bash
+# Rome - Ancient street layout
+python create_map_poster.py -c "Rome" -C "Italy" -t warm_beige -d 8000
+
+# Marrakech - Medina maze
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+
+# Jerusalem - Old City
+python create_map_poster.py -c "Jerusalem" -C "Israel" -t blueprint -d 6000
+```
+
+**Recommended**: 4,000-8,000m
+
+### Waterfront Cities
+
+Coastal and river cities benefit from distances that capture the water interface.
+
+```bash
+# Venice - Canal network
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+
+# Amsterdam - Concentric canals
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t ocean -d 6000
+
+# Sydney - Harbour city
+python create_map_poster.py -c "Sydney" -C "Australia" -t ocean -d 12000
+
+# San Francisco - Bay and peninsula
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+```
+
+**Recommended**: 4,000-12,000m (depends on city size)
+
+### River Cities
+
+Cities bisected by rivers need enough distance to show both banks.
+
+```bash
+# London - Thames curves
+python create_map_poster.py -c "London" -C "UK" -t noir -d 15000
+
+# Budapest - Danube split
+python create_map_poster.py -c "Budapest" -C "Hungary" -t copper_patina -d 8000
+
+# Paris - Seine bends
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 10000
+```
+
+**Recommended**: 8,000-15,000m
+
+## Fine-Tuning Distance
+
+### Start with Defaults
+
+If unsure, start with the city-type default:
+
+```bash
+# Small/dense city - try 5000m
+python create_map_poster.py -c "Venice" -C "Italy" -d 5000
+
+# Medium city - try 10000m
+python create_map_poster.py -c "Paris" -C "France" -d 10000
+
+# Large city - try 18000m (default)
+python create_map_poster.py -c "Tokyo" -C "Japan"
+```
+
+### Iterative Adjustment
+
+1. Generate a test poster
+2. Evaluate coverage:
+   - **Too zoomed out?** Reduce distance by 2,000-4,000m
+   - **Too zoomed in?** Increase distance by 2,000-4,000m
+3. Regenerate and compare
+
+<Tip>
+Generate multiple posters with different distances using `--all-themes` to compare quickly:
+
+```bash
+# Generate at 8km
+python create_map_poster.py -c "Paris" -C "France" -d 8000 -t noir
+
+# Generate at 12km
+python create_map_poster.py -c "Paris" -C "France" -d 12000 -t noir
+```
+</Tip>
+
+## Override Center Point
+
+For precise control, manually set the center coordinates:
+
+```bash
+# Focus on Central Park, NYC
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -lat 40.776676 -long -73.971321 \
+  -d 8000
+
+# Focus on Eiffel Tower, Paris
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -lat 48.8584 -long 2.2945 \
+  -d 6000
+```
+
+<Note>
+Geocoding services may not always return the ideal center point. Use coordinate overrides for precision.
+</Note>
+
+## Distance Comparison Examples
+
+Same city, different distances to show the effect:
+
+### Paris
+
+<CodeGroup>
+```bash Tight Focus (6km)
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -d 6000
+# Shows central arrondissements only
+```
+
+```bash Balanced (10km)
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -d 10000
+# Shows classic Paris within périphérique
+```
+
+```bash Wide View (15km)
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -d 15000
+# Includes inner suburbs
+```
+</CodeGroup>
+
+### New York
+
+<CodeGroup>
+```bash Midtown Focus (8km)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -d 8000
+# Shows Manhattan core
+```
+
+```bash Manhattan Island (12km)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -d 12000
+# Captures most of Manhattan
+```
+
+```bash Five Boroughs (20km)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -d 20000
+# Shows parts of all boroughs
+```
+</CodeGroup>
+
+## Common Distance Values
+
+Frequently used distance presets:
+
+| Distance | Coverage | Typical Use |
+|----------|----------|-------------|
+| **3,000m** | 3km radius | Neighborhoods, small districts |
+| **5,000m** | 5km radius | Historic centers, old towns |
+| **8,000m** | 8km radius | Downtown cores, central districts |
+| **10,000m** | 10km radius | Full city centers |
+| **12,000m** | 12km radius | Extended metropolitan core |
+| **15,000m** | 15km radius | Major cities, full coverage |
+| **18,000m** | 18km radius | **Default** - Large city overview |
+| **20,000m** | 20km radius | Megacity sprawl, maximum coverage |
+
+## Technical Notes
+
+### Distance Compensation
+
+The tool automatically compensates for aspect ratio by fetching slightly more data than requested:
+
+```python
+compensated_dist = dist * (max(height, width) / min(height, width)) / 4
+```
+
+This ensures the specified distance is fully covered regardless of poster dimensions.
+
+### Data Fetching
+
+Larger distances mean:
+- **Longer download times** (more OSM data)
+- **Higher memory usage** (more features to process)
+- **Larger cache files** (data is cached locally)
+
+<Warning>
+Very large distances (>25km) may cause:
+- Slow performance
+- Memory issues
+- Overpass API timeouts
+
+Stay within the recommended 4,000-20,000m range for best results.
+</Warning>
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Basic Usage" icon="rocket" href="/usage/basic-usage">
+    Common commands and usage patterns
+  </Card>
+  <Card title="Command Reference" icon="terminal" href="/usage/command-reference">
+    Complete flag documentation
+  </Card>
+  <Card title="Resolution Guide" icon="image" href="/usage/resolution-guide">
+    Configure output dimensions
+  </Card>
+  <Card title="Examples" icon="map" href="/examples/gallery">
+    City-specific examples and recommendations
+  </Card>
+</CardGroup>

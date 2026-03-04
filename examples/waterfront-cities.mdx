@@ -1,0 +1,399 @@
+---
+title: 'Waterfront Cities'
+description: 'Create stunning posters for coastal cities, canal networks, and harbor towns'
+---
+
+## Overview
+
+Waterfront cities offer some of the most visually striking map posters, with natural water features creating beautiful contrast against urban street networks. This guide covers coastal cities, canal systems, and river cities.
+
+## Canal Cities
+
+Canal cities feature intricate waterway networks that create unique patterns perfect for map posters.
+
+### Venice - Canal Network
+
+Venice's unique canal system with no roads, only waterways and pedestrian paths.
+
+<CodeGroup>
+```bash Basic Command
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+```
+
+```bash With uv
+uv run ./create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+```
+
+```bash Alternative Theme
+python create_map_poster.py -c "Venice" -C "Italy" -t ocean -d 4000
+```
+</CodeGroup>
+
+<Accordion title="Why These Settings Work">
+- **Distance: 4,000m** - Captures the historic center of Venice without diluting the canal detail
+- **Theme: Blueprint** - Architectural style emphasizes the engineering of the canal system
+- **Theme: Ocean** - Blues and teals complement the water-dominant city
+- **Small radius** - Venice's compact historic center fits perfectly in 4km radius
+</Accordion>
+
+### Amsterdam - Concentric Canals
+
+Amsterdam's famous UNESCO-listed concentric canal ring system (Grachtengordel).
+
+<CodeGroup>
+```bash Recommended
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t ocean -d 6000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t blueprint -d 6000
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t noir -d 6000
+```
+</CodeGroup>
+
+<Accordion title="Configuration Details">
+- **Distance: 6,000m** - Perfect for capturing the canal ring system
+- **Theme: Ocean** - Water-inspired colors emphasize the canals
+- The concentric pattern is one of the most distinctive in the world
+- Consider `noir` theme for dramatic contrast between water and land
+</Accordion>
+
+## Coastal Cities
+
+Coastal cities combine urban grids with natural coastlines, creating dramatic poster compositions.
+
+### Dubai - Palm & Modern Coastline
+
+Dubai's modern development including the iconic Palm Islands and coastal architecture.
+
+<CodeGroup>
+```bash Full Command
+python create_map_poster.py -c "Dubai" -C "UAE" -t midnight_blue -d 15000
+```
+
+```bash With Arabic Text
+python create_map_poster.py -c "Dubai" -C "UAE" \
+  -dc "دبي" -dC "الإمارات" \
+  --font-family "Cairo" \
+  -t midnight_blue -d 15000
+```
+
+```bash Alternative Theme
+python create_map_poster.py -c "Dubai" -C "UAE" -t neon_cyberpunk -d 15000
+```
+</CodeGroup>
+
+<Note>
+**Why 15,000m?**
+
+Dubai requires a larger radius to capture:
+- The Palm Jumeirah artificial island
+- The marina coastline
+- Downtown Dubai
+- The Creek
+</Note>
+
+### San Francisco - Peninsula Grid
+
+San Francisco's distinctive grid pattern meets the waterfront, showcasing unique geography.
+
+<CodeGroup>
+```bash Sunset Theme
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+```
+
+```bash Ocean Theme
+python create_map_poster.py -c "San Francisco" -C "USA" -t ocean -d 10000
+```
+
+```bash Noir Theme
+python create_map_poster.py -c "San Francisco" -C "USA" -t noir -d 10000
+```
+</CodeGroup>
+
+<Accordion title="Best Settings Explained">
+- **Distance: 10,000m** - Captures the peninsula shape and both waterfronts
+- **Theme: Sunset** - Complements the city's famous sunsets and Golden Gate
+- **Theme: Ocean** - Emphasizes the bay and coastal setting
+- Shows the grid adapting to topography
+</Accordion>
+
+### Mumbai - Coastal Peninsula
+
+Mumbai's coastal peninsula with dense urban fabric and contrast between districts.
+
+<CodeGroup>
+```bash Recommended
+python create_map_poster.py -c "Mumbai" -C "India" -t contrast_zones -d 18000
+```
+
+```bash Ocean Theme
+python create_map_poster.py -c "Mumbai" -C "India" -t ocean -d 18000
+```
+</CodeGroup>
+
+<Note>
+**Large Metro View**
+
+Mumbai requires 18,000m distance to capture:
+- The full peninsula geography
+- Urban density variations
+- Coastal development
+- Island connections
+</Note>
+
+### Seattle - Emerald City
+
+Seattle's urban landscape with Puget Sound and natural water features.
+
+<CodeGroup>
+```bash Emerald Theme
+python create_map_poster.py -c "Seattle" -C "USA" -t emerald -d 10000
+```
+
+```bash Forest Theme
+python create_map_poster.py -c "Seattle" -C "USA" -t forest -d 10000
+```
+
+```bash Ocean Theme
+python create_map_poster.py -c "Seattle" -C "USA" -t ocean -d 10000
+```
+</CodeGroup>
+
+<Tip>
+**Pacific Northwest Aesthetic**
+
+Seattle looks best with green or blue themes:
+- `emerald` - Reflects the "Emerald City" nickname
+- `forest` - Complements the surrounding nature
+- `ocean` - Emphasizes Puget Sound
+</Tip>
+
+### Sydney - Harbor City
+
+Sydney's famous harbor with iconic coastline.
+
+<CodeGroup>
+```bash Recommended
+python create_map_poster.py -c "Sydney" -C "Australia" -t ocean -d 12000
+```
+
+```bash Alternative
+python create_map_poster.py -c "Sydney" -C "Australia" -t sunset -d 12000
+```
+</CodeGroup>
+
+## River Cities
+
+River cities feature waterways that divide and define urban development.
+
+### London - Thames Curves
+
+London's urban fabric shaped by the winding River Thames.
+
+<CodeGroup>
+```bash Large Metro View
+python create_map_poster.py -c "London" -C "UK" -t noir -d 15000
+```
+
+```bash Central London Focus
+python create_map_poster.py -c "London" -C "UK" -t blueprint -d 10000
+```
+</CodeGroup>
+
+<Accordion title="Distance Options">
+- **15,000m** - Full metropolitan view including Thames curves
+- **10,000m** - Central London with Westminster, City, and main bridges
+- **8,000m** - Tight focus on historic core
+</Accordion>
+
+### Budapest - Danube Split
+
+Budapest divided by the Danube River into Buda and Pest.
+
+<CodeGroup>
+```bash Copper Patina Theme
+python create_map_poster.py -c "Budapest" -C "Hungary" -t copper_patina -d 8000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "Budapest" -C "Hungary" -t warm_beige -d 8000
+python create_map_poster.py -c "Budapest" -C "Hungary" -t ocean -d 8000
+```
+</CodeGroup>
+
+<Note>
+**Perfect Symmetry**
+
+Budapest's poster beautifully shows:
+- The Danube dividing the city
+- Historic Buda (west) vs. flat Pest (east)
+- Bridge connections
+- Margaret Island in the river
+</Note>
+
+## Distance Guide for Waterfront Cities
+
+<CardGroup cols={3}>
+  <Card title="Small Cities" icon="anchor">
+    **4,000-6,000m**
+    
+    Venice, Amsterdam center, Marrakech
+    
+    Best for compact historic centers
+  </Card>
+  
+  <Card title="Medium Cities" icon="ship">
+    **8,000-12,000m**
+    
+    Budapest, San Francisco, Sydney, Seattle
+    
+    Balances detail with coverage
+  </Card>
+  
+  <Card title="Large Metros" icon="globe">
+    **15,000-20,000m**
+    
+    Dubai, Mumbai, London
+    
+    Full metropolitan coastal view
+  </Card>
+</CardGroup>
+
+## Theme Recommendations
+
+### Best Themes for Waterfront Cities
+
+<Tabs>
+  <Tab title="Ocean">
+    **Perfect for coastal cities**
+    
+    Blues and teals emphasize water features
+    
+    ```bash
+    -t ocean
+    ```
+    
+    Best for: Amsterdam, Sydney, Seattle, coastal cities
+  </Tab>
+  
+  <Tab title="Blueprint">
+    **Architectural documentation**
+    
+    Clean, professional aesthetic
+    
+    ```bash
+    -t blueprint
+    ```
+    
+    Best for: Venice, Amsterdam, London, canal cities
+  </Tab>
+  
+  <Tab title="Midnight Blue">
+    **Elegant and sophisticated**
+    
+    Navy background with gold roads
+    
+    ```bash
+    -t midnight_blue
+    ```
+    
+    Best for: Dubai, modern waterfront developments
+  </Tab>
+  
+  <Tab title="Noir">
+    **Dramatic contrast**
+    
+    Pure black background, white roads
+    
+    ```bash
+    -t noir
+    ```
+    
+    Best for: London, large river cities
+  </Tab>
+</Tabs>
+
+## Advanced Techniques
+
+### Centering on Specific Waterfront Areas
+
+Use custom coordinates to center on specific waterfront features:
+
+```bash
+# Venice - Center on Grand Canal
+python create_map_poster.py \
+  --city "Venice" --country "Italy" \
+  -lat 45.4375 -long 12.3358 \
+  -t blueprint -d 4000
+
+# San Francisco - Center on Golden Gate
+python create_map_poster.py \
+  --city "San Francisco" --country "USA" \
+  -lat 37.8199 -long -122.4783 \
+  -t sunset -d 8000
+```
+
+### High Resolution for Prints
+
+Create print-ready posters of waterfront cities:
+
+```bash
+# A4 Print (8.3 x 11.7 inches at 300 DPI)
+python create_map_poster.py \
+  -c "Venice" -C "Italy" \
+  -t blueprint -d 4000 \
+  -W 8.3 -H 11.7
+
+# Large Format (12 x 16 inches)
+python create_map_poster.py \
+  -c "Amsterdam" -C "Netherlands" \
+  -t ocean -d 6000 \
+  -W 12 -H 16
+```
+
+## Tips for Best Results
+
+<Tip>
+**Water-Dominant Cities**
+
+For cities where water is the primary feature (Venice, Amsterdam):
+- Use smaller distances (4,000-6,000m) to maintain detail
+- Choose themes with good water/land contrast (`ocean`, `blueprint`, `noir`)
+- Consider the compact historic centers
+</Tip>
+
+<Tip>
+**Coastal Cities**
+
+For cities with coastal geography (San Francisco, Dubai):
+- Use medium to large distances (10,000-15,000m) to show full coastline
+- Themes like `sunset`, `ocean`, `midnight_blue` complement water features
+- Consider the peninsula or bay shapes
+</Tip>
+
+<Tip>
+**River Cities**
+
+For cities divided by rivers (London, Budapest):
+- Medium distances (8,000-12,000m) show the river's role in city layout
+- Themes with good contrast help distinguish water from land
+- The symmetry of river divisions creates striking compositions
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Grid Patterns" icon="grid" href="/examples/grid-patterns">
+    Explore cities with iconic grid systems
+  </Card>
+  <Card title="Organic Cities" icon="leaf" href="/examples/organic-cities">
+    Historic cities with organic layouts
+  </Card>
+  <Card title="All Themes" icon="palette" href="/guides/themes">
+    Browse all 17 available themes
+  </Card>
+  <Card title="Distance Guide" icon="ruler" href="/usage/distance-guide">
+    Learn how to choose the right distance
+  </Card>
+</CardGroup>

@@ -1,0 +1,331 @@
+---
+title: Font Management
+description: Font loading functions for local fonts and Google Fonts integration with automatic caching
+---
+
+## Overview
+
+The font management module handles font loading from both local files and Google Fonts API, with automatic caching to minimize network requests.
+
+## load_fonts()
+
+Load fonts from local directory or download from Google Fonts.
+
+```python
+load_fonts(font_family=None)
+```
+
+Returns a dictionary with font paths for different weights (bold, regular, light).
+
+<ParamField path="font_family" type="str" optional>
+  Google Fonts family name (e.g., "Noto Sans JP", "Open Sans", "Playfair Display")
+  
+  If None or "roboto", uses local Roboto fonts from the fonts/ directory.
+</ParamField>
+
+<ResponseField name="return" type="dict | None">
+  Dictionary with keys:
+  - `"bold"`: Path to bold weight font file
+  - `"regular"`: Path to regular weight font file
+  - `"light"`: Path to light weight font file
+  
+  Returns None if all loading methods fail.
+</ResponseField>
+
+### Behavior
+
+1. **Custom Google Font**: If `font_family` is specified and not "roboto", attempts to download from Google Fonts
+2. **Fallback to Local**: If download fails, falls back to local Roboto fonts
+3. **Default**: If `font_family` is None, loads local Roboto fonts directly
+4. **Validation**: Verifies that all font files exist before returning
+
+### Example Usage
+
+<CodeGroup>
+```python Default (Roboto)
+from font_management import load_fonts
+
+# Load local Roboto fonts
+fonts = load_fonts()
+print(fonts["bold"])     # "fonts/Roboto-Bold.ttf"
+print(fonts["regular"])  # "fonts/Roboto-Regular.ttf"
+print(fonts["light"])    # "fonts/Roboto-Light.ttf"
+```
+
+```python Google Fonts
+from font_management import load_fonts
+
+# Download and cache Noto Sans Japanese
+fonts = load_fonts("Noto Sans JP")
+print(fonts["bold"])     # "fonts/cache/noto_sans_jp_bold.woff2"
+print(fonts["regular"])  # "fonts/cache/noto_sans_jp_regular.woff2"
+print(fonts["light"])    # "fonts/cache/noto_sans_jp_light.woff2"
+```
+
+```python With create_poster()
+from create_map_poster import create_poster
+from font_management import load_fonts
+
+# Use custom font for poster
+custom_fonts = load_fonts("Playfair Display")
+
+create_poster(
+    city="Tokyo",
+    country="Japan",
+    point=(35.6762, 139.6503),
+    dist=15000,
+    output_file="tokyo.png",
+    output_format="png",
+    fonts=custom_fonts  # Use custom fonts
+)
+```
+</CodeGroup>
+
+---
+
+## download_google_font()
+
+Download a font family from Google Fonts and cache it locally.
+
+```python
+download_google_font(font_family, weights=None)
+```
+
+<ParamField path="font_family" type="str" required>
+  Google Fonts family name (e.g., "Noto Sans JP", "Open Sans")
+  
+  Must exactly match the font family name as it appears on [Google Fonts](https://fonts.google.com/).
+</ParamField>
+
+<ParamField path="weights" type="list[int]" default="[300, 400, 700]">
+  List of font weights to download:
+  - 300 = Light
+  - 400 = Regular
+  - 700 = Bold
+  
+  If a specific weight is unavailable, the function finds the closest available weight.
+</ParamField>
+
+<ResponseField name="return" type="dict | None">
+  Dictionary with 'light', 'regular', 'bold' keys mapping to font file paths.
+  
+  Returns None if download fails.
+</ResponseField>
+
+### Download Process
+
+1. **Cache Check**: Checks if fonts are already cached in `fonts/cache/`
+2. **API Request**: Fetches font CSS from Google Fonts API
+3. **URL Extraction**: Parses CSS to extract weight-specific font URLs
+4. **File Download**: Downloads WOFF2 or TTF files for each weight
+5. **Weight Mapping**: Maps downloaded weights to 'light', 'regular', 'bold' keys
+6. **Fallback Handling**: Uses closest available weight if exact weight unavailable
+
+### Caching
+
+Downloaded fonts are cached in:
+```
+fonts/cache/{font_name_safe}_{weight}.{ext}
+```
+
+Examples:
+- `fonts/cache/noto_sans_jp_bold.woff2`
+- `fonts/cache/open_sans_regular.woff2`
+- `fonts/cache/playfair_display_light.ttf`
+
+Cached fonts are automatically reused on subsequent calls.
+
+### Error Handling
+
+<CodeGroup>
+```python Weight Not Found
+# If weight 300 is unavailable, uses closest (e.g., 400)
+fonts = download_google_font("Some Font", weights=[300, 400, 700])
+# Output: "Using weight 400 for light (requested 300 not available)"
+```
+
+```python Missing Weights
+# If only regular (400) is available
+fonts = download_google_font("Some Font")
+# Automatically duplicates:
+# - regular -> bold
+# - regular -> light
+print(fonts["bold"] == fonts["regular"])  # True
+```
+
+```python Download Failure
+fonts = download_google_font("Nonexistent Font")
+print(fonts)  # None
+# Output: "⚠ Error downloading Google Font 'Nonexistent Font': ..."
+```
+</CodeGroup>
+
+---
+
+## Font File Formats
+
+### Supported Formats
+
+<CardGroup cols={2}>
+  <Card title="WOFF2" icon="font">
+    **Preferred format** from Google Fonts
+    
+    - Better compression (30% smaller than TTF)
+    - Faster loading
+    - Modern browsers only
+  </Card>
+  
+  <Card title="TTF" icon="file">
+    **Fallback format**
+    
+    - Universal compatibility
+    - Larger file size
+    - Works everywhere
+  </Card>
+</CardGroup>
+
+The function automatically requests WOFF2 files from Google Fonts but falls back to TTF if needed.
+
+---
+
+## Local Font Structure
+
+### Default Roboto Fonts
+
+Local Roboto fonts must be located at:
+```
+fonts/
+├── Roboto-Bold.ttf
+├── Roboto-Regular.ttf
+└── Roboto-Light.ttf
+```
+
+### Adding Custom Local Fonts
+
+To use custom local fonts without Google Fonts:
+
+1. Place font files in `fonts/` directory
+2. Modify `load_fonts()` function to reference your files:
+
+```python
+fonts = {
+    "bold": "fonts/YourFont-Bold.ttf",
+    "regular": "fonts/YourFont-Regular.ttf",
+    "light": "fonts/YourFont-Light.ttf",
+}
+```
+
+---
+
+## Command Line Usage
+
+You can specify custom fonts when generating posters:
+
+```bash
+# Use Google Font
+python create_map_poster.py \
+  --city "Tokyo" \
+  --country "Japan" \
+  --font-family "Noto Sans JP"
+
+# Use Google Font with theme
+python create_map_poster.py \
+  --city "Paris" \
+  --country "France" \
+  --theme "pastel_dream" \
+  --font-family "Playfair Display"
+```
+
+<Note>
+  Font family names are case-sensitive and must match exactly as they appear on [Google Fonts](https://fonts.google.com/).
+</Note>
+
+---
+
+## Constants
+
+### FONTS_DIR
+
+Directory for local font files.
+
+```python
+FONTS_DIR = "fonts"
+```
+
+### FONTS_CACHE_DIR
+
+Directory for cached Google Fonts downloads.
+
+```python
+FONTS_CACHE_DIR = Path(FONTS_DIR) / "cache"
+# Resolves to: fonts/cache/
+```
+
+---
+
+## Font Recommendations
+
+### For Latin Scripts
+
+- **Roboto** (default) - Clean, modern sans-serif
+- **Open Sans** - Friendly, readable
+- **Montserrat** - Geometric, elegant
+- **Playfair Display** - Classic serif for sophisticated look
+- **Raleway** - Elegant sans-serif with personality
+
+### For Non-Latin Scripts
+
+- **Noto Sans JP** - Japanese
+- **Noto Sans KR** - Korean
+- **Noto Sans SC** - Simplified Chinese
+- **Noto Sans TC** - Traditional Chinese
+- **Noto Sans Thai** - Thai
+- **Noto Sans Arabic** - Arabic
+
+<Tip>
+  The **Noto** font family by Google provides excellent coverage for most world scripts with consistent design across languages.
+</Tip>
+
+---
+
+## Rate Limiting
+
+The `download_google_font()` function includes:
+- 10-second timeout for HTTP requests
+- Automatic retry handling
+- Respectful delays between requests
+
+Google Fonts API has no strict rate limits but excessive requests may be throttled.
+
+---
+
+## Troubleshooting
+
+### Font Not Found
+
+```python
+fonts = load_fonts("Invalid Font Name")
+# Output: "⚠ Error downloading Google Font 'Invalid Font Name': ..."
+# Output: "⚠ Failed to load 'Invalid Font Name', falling back to local Roboto"
+```
+
+Verify font name at [fonts.google.com](https://fonts.google.com/)
+
+### Local Fonts Missing
+
+```python
+fonts = load_fonts()
+if fonts is None:
+    print("Roboto fonts not found in fonts/ directory")
+```
+
+Ensure `fonts/Roboto-*.ttf` files exist.
+
+### Cache Issues
+
+Clear the cache directory:
+```bash
+rm -rf fonts/cache/*
+```
+
+Fonts will be re-downloaded on next use.

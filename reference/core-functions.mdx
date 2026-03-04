@@ -1,0 +1,366 @@
+---
+title: Core Functions
+description: Main API functions for generating map posters, fetching geographic data, and managing themes
+---
+
+## create_poster()
+
+Generate a complete map poster with roads, water, parks, and typography.
+
+```python
+create_poster(
+    city,
+    country,
+    point,
+    dist,
+    output_file,
+    output_format,
+    width=12,
+    height=16,
+    country_label=None,
+    name_label=None,
+    display_city=None,
+    display_country=None,
+    fonts=None,
+)
+```
+
+Creates a high-quality poster by fetching OpenStreetMap data, rendering map layers, applying the current theme, and adding text labels with coordinates.
+
+<ParamField path="city" type="str" required>
+  City name for display on poster
+</ParamField>
+
+<ParamField path="country" type="str" required>
+  Country name for display on poster
+</ParamField>
+
+<ParamField path="point" type="tuple" required>
+  (latitude, longitude) tuple for map center
+</ParamField>
+
+<ParamField path="dist" type="int" required>
+  Map radius in meters (e.g., 4000-6000m for small cities, 15000-20000m for large metros)
+</ParamField>
+
+<ParamField path="output_file" type="str" required>
+  Path where poster will be saved
+</ParamField>
+
+<ParamField path="output_format" type="str" required>
+  File format: 'png', 'svg', or 'pdf'
+</ParamField>
+
+<ParamField path="width" type="int" default="12">
+  Poster width in inches (maximum: 20)
+</ParamField>
+
+<ParamField path="height" type="int" default="16">
+  Poster height in inches (maximum: 20)
+</ParamField>
+
+<ParamField path="country_label" type="str">
+  Optional override for country text displayed on poster
+</ParamField>
+
+<ParamField path="name_label" type="str">
+  Optional override for city name (reserved for future use)
+</ParamField>
+
+<ParamField path="display_city" type="str">
+  Custom display name for city (supports internationalization)
+</ParamField>
+
+<ParamField path="display_country" type="str">
+  Custom display name for country (supports internationalization)
+</ParamField>
+
+<ParamField path="fonts" type="dict">
+  Custom font dictionary with 'bold', 'regular', 'light' keys mapping to font file paths. If None, uses default FONTS.
+</ParamField>
+
+<ResponseField name="raises" type="RuntimeError">
+  If street network data cannot be retrieved from OpenStreetMap
+</ResponseField>
+
+### Display Name Priority
+
+The function uses the following priority for display names:
+1. `display_city` / `display_country` (highest priority)
+2. `name_label` / `country_label`
+3. `city` / `country` (fallback)
+
+### Text Formatting
+
+The function automatically handles different scripts:
+- **Latin scripts**: Applies uppercase and letter spacing (e.g., "P A R I S")
+- **Non-Latin scripts** (CJK, Arabic, Thai, etc.): Preserves case structure without spacing
+
+---
+
+## get_coordinates()
+
+Fetch coordinates for a given city and country using geopy geocoding service.
+
+```python
+get_coordinates(city, country)
+```
+
+Includes automatic caching and rate limiting to be respectful to the geocoding service.
+
+<ParamField path="city" type="str" required>
+  City name to geocode
+</ParamField>
+
+<ParamField path="country" type="str" required>
+  Country name to geocode
+</ParamField>
+
+<ResponseField name="return" type="tuple">
+  (latitude, longitude) tuple of floats
+</ResponseField>
+
+<ResponseField name="raises" type="ValueError">
+  If coordinates cannot be found or geocoding fails
+</ResponseField>
+
+### Caching Behavior
+
+Coordinates are automatically cached using the key format: `coords_{city.lower()}_{country.lower()}`
+
+If cached coordinates exist, they are returned immediately without making a network request.
+
+---
+
+## load_theme()
+
+Load a theme configuration from JSON file in the themes directory.
+
+```python
+load_theme(theme_name="terracotta")
+```
+
+<ParamField path="theme_name" type="str" default="terracotta">
+  Name of the theme file (without .json extension)
+</ParamField>
+
+<ResponseField name="return" type="dict">
+  Theme dictionary containing all color configuration fields. See [Theme Schema](/reference/theme-schema) for complete field documentation.
+</ResponseField>
+
+### Fallback Behavior
+
+If the specified theme file is not found, the function:
+1. Prints a warning message
+2. Returns the embedded terracotta theme as fallback
+
+### Theme Directory
+
+Theme files must be located in: `themes/{theme_name}.json`
+
+---
+
+## get_available_themes()
+
+Scan the themes directory and return a list of available theme names.
+
+```python
+get_available_themes()
+```
+
+<ResponseField name="return" type="list[str]">
+  List of theme names (without .json extension), sorted alphabetically
+</ResponseField>
+
+### Behavior
+
+- Creates the themes directory if it doesn't exist
+- Returns empty list if no themes are found
+- Only includes files with `.json` extension
+
+---
+
+## fetch_graph()
+
+Fetch street network graph from OpenStreetMap using OSMnx.
+
+```python
+fetch_graph(point, dist)
+```
+
+Uses caching to avoid redundant downloads. Fetches all network types within the specified distance from the center point.
+
+<ParamField path="point" type="tuple" required>
+  (latitude, longitude) tuple for center point
+</ParamField>
+
+<ParamField path="dist" type="int" required>
+  Distance in meters from center point
+</ParamField>
+
+<ResponseField name="return" type="MultiDiGraph | None">
+  NetworkX MultiDiGraph of street network, or None if fetch fails
+</ResponseField>
+
+### Caching
+
+Graphs are cached using the key format: `graph_{lat}_{lon}_{dist}`
+
+### Rate Limiting
+
+Includes automatic 0.5 second delay between requests to respect OpenStreetMap usage policies.
+
+---
+
+## fetch_features()
+
+Fetch geographic features (water, parks, etc.) from OpenStreetMap.
+
+```python
+fetch_features(point, dist, tags, name)
+```
+
+Uses caching to avoid redundant downloads. Fetches features matching the specified OSM tags within distance from center point.
+
+<ParamField path="point" type="tuple" required>
+  (latitude, longitude) tuple for center point
+</ParamField>
+
+<ParamField path="dist" type="int" required>
+  Distance in meters from center point
+</ParamField>
+
+<ParamField path="tags" type="dict" required>
+  Dictionary of OSM tags to filter features (e.g., `{"natural": ["water", "bay"], "waterway": "riverbank"}`)
+</ParamField>
+
+<ParamField path="name" type="str" required>
+  Name for this feature type (used for caching and logging)
+</ParamField>
+
+<ResponseField name="return" type="GeoDataFrame | None">
+  GeoPandas GeoDataFrame of features, or None if fetch fails
+</ResponseField>
+
+### Example Tags
+
+<CodeGroup>
+```python Water Features
+tags = {
+    "natural": ["water", "bay", "strait"],
+    "waterway": "riverbank"
+}
+```
+
+```python Parks
+tags = {
+    "leisure": "park",
+    "landuse": "grass"
+}
+```
+</CodeGroup>
+
+### Rate Limiting
+
+Includes automatic 0.3 second delay between requests.
+
+---
+
+## Cache Functions
+
+### cache_get()
+
+Retrieve a cached object by key.
+
+```python
+cache_get(key)
+```
+
+<ParamField path="key" type="str" required>
+  Cache key identifier
+</ParamField>
+
+<ResponseField name="return" type="Any | None">
+  Cached object if found, None otherwise
+</ResponseField>
+
+<ResponseField name="raises" type="CacheError">
+  If cache read operation fails
+</ResponseField>
+
+### cache_set()
+
+Store an object in the cache.
+
+```python
+cache_set(key, value)
+```
+
+<ParamField path="key" type="str" required>
+  Cache key identifier
+</ParamField>
+
+<ParamField path="value" type="Any" required>
+  Object to cache (must be picklable)
+</ParamField>
+
+<ResponseField name="raises" type="CacheError">
+  If cache write operation fails
+</ResponseField>
+
+### Cache Directory
+
+Cache files are stored in the directory specified by the `CACHE_DIR` environment variable, defaulting to `./cache/`
+
+---
+
+## Utility Functions
+
+### generate_output_filename()
+
+Generate unique output filename with city, theme, and datetime.
+
+```python
+generate_output_filename(city, theme_name, output_format)
+```
+
+<ParamField path="city" type="str" required>
+  City name
+</ParamField>
+
+<ParamField path="theme_name" type="str" required>
+  Theme name
+</ParamField>
+
+<ParamField path="output_format" type="str" required>
+  File extension (png, svg, pdf)
+</ParamField>
+
+<ResponseField name="return" type="str">
+  Full path to output file: `posters/{city_slug}_{theme_name}_{timestamp}.{ext}`
+</ResponseField>
+
+### is_latin_script()
+
+Check if text is primarily Latin script.
+
+```python
+is_latin_script(text)
+```
+
+Used to determine if letter-spacing should be applied to city names on the poster.
+
+<ParamField path="text" type="str" required>
+  Text to analyze
+</ParamField>
+
+<ResponseField name="return" type="bool">
+  True if text is primarily Latin script (>80% of alphabetic characters), False otherwise
+</ResponseField>
+
+### Latin Unicode Ranges
+
+- Basic Latin: U+0000 to U+007F
+- Latin-1 Supplement: U+0080 to U+00FF
+- Latin Extended-A: U+0100 to U+017F
+- Latin Extended-B: U+0180 to U+024F

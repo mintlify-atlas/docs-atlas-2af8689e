@@ -1,0 +1,580 @@
+---
+title: 'Architecture Overview'
+description: 'Technical deep-dive into MapToPoster rendering pipeline, data flow, and key components'
+---
+
+## System Architecture
+
+MapToPoster is a Python-based command-line tool that generates minimalist map posters by fetching OpenStreetMap data and rendering it with matplotlib. The architecture follows a modular pipeline design.
+
+### High-Level Data Flow
+
+```
+┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
+│   CLI Parser    │────▶│  Geocoding   │────▶│  Data Fetching  │
+│   (argparse)    │     │  (Nominatim) │     │    (OSMnx)      │
+└─────────────────┘     └──────────────┘     └─────────────────┘
+                                                      │
+                        ┌──────────────┐             ▼
+                        │    Output    │◀────┌─────────────────┐
+                        │  (matplotlib)│     │   Rendering     │
+                        └──────────────┘     │  (matplotlib)   │
+                                             └─────────────────┘
+```
+
+<Steps>
+  <Step title="CLI Argument Parsing">
+    The entry point (`create_map_poster.py:860-1051`) uses argparse to collect user inputs:
+    - **Required**: City and country names
+    - **Optional**: Theme, distance, dimensions, coordinates override, custom fonts
+    - **Validation**: Maximum dimensions (20 inches), theme availability checks
+  </Step>
+
+  <Step title="Coordinate Resolution">
+    The `get_coordinates()` function (`create_map_poster.py:319-370`) converts city/country to lat/lon:
+    - Uses Nominatim geocoding service via geopy
+    - Implements rate limiting (1 second delay) to respect API policies
+    - Caches results locally to avoid redundant requests
+    - Falls back to manual coordinate override via `--latitude`/`--longitude` flags
+  </Step>
+
+  <Step title="OSM Data Fetching">
+    Three parallel data fetch operations using OSMnx:
+    
+    **Street Network** (`fetch_graph()` at line 409-441):
+    - Fetches all road types within specified radius
+    - Uses `network_type='all'` to include all drivable roads
+    - Applies distance compensation for viewport cropping
+    - Cached via pickle for performance
+    
+    **Water Features** (`fetch_features()` at line 444-479):
+    - Tags: `{"natural": ["water", "bay", "strait"], "waterway": "riverbank"}`
+    - Returns GeoDataFrame of water polygons
+    - Rate-limited with 0.3s delay between requests
+    
+    **Parks & Green Spaces**:
+    - Tags: `{"leisure": "park", "landuse": "grass"}`
+    - Returns GeoDataFrame of park polygons
+  </Step>
+
+  <Step title="Map Rendering">
+    The `create_poster()` function (`create_map_poster.py:482-772`) orchestrates the rendering:
+    - Creates matplotlib figure with theme background color
+    - Projects all geographic data to metric CRS for accurate scaling
+    - Renders layers in correct z-order
+    - Applies gradient fades and typography
+    - Exports to PNG (300 DPI), SVG, or PDF
+  </Step>
+</Steps>
+
+---
+
+## Rendering Pipeline
+
+### Layer Composition
+
+MapToPoster renders map elements in a specific z-order (bottom to top) to ensure proper visual hierarchy:
+
+```text
+z=11  Text labels (city, country, coordinates, attribution)
+z=10  Gradient fades (top & bottom 25% of canvas)
+z=2   Roads (styled by hierarchy)
+z=0.8 Parks (green polygons)
+z=0.5 Water (blue polygons)  
+z=0   Background color (solid fill)
+```
+
+<Accordion title="Layer 0-1: Background & Water Features">
+  **Background** (`create_map_poster.py:564-566`):
+  - Solid color fill using `THEME['bg']`
+  - Applied to both figure and axes for seamless borders
+  
+  **Water Rendering** (`create_map_poster.py:574-582`):
+  - Filters to only `Polygon` and `MultiPolygon` geometries (excludes point features)
+  - Projects to graph CRS for proper alignment
+  - Rendered with `THEME['water']` color at `zorder=0.5`
+  - No edge color for clean appearance
+</Accordion>
+
+<Accordion title="Layer 2: Parks & Green Spaces">
+  **Parks Rendering** (`create_map_poster.py:584-593`):
+  - Same polygon filtering as water features
+  - Projected to match graph coordinate system
+  - Uses `THEME['parks']` color at `zorder=0.8`
+  - Sits above water but below roads
+</Accordion>
+
+<Accordion title="Layer 3: Road Network">
+  **Road Hierarchy** (`create_map_poster.py:595-612`):
+  - Roads styled by OSM `highway` tag using `get_edge_colors_by_type()` and `get_edge_widths_by_type()`
+  - Rendered at `zorder=2` (matplotlib default for `ox.plot_graph`)
+  - Aspect ratio maintained via `get_crop_limits()` to prevent distortion
+  - Node size set to 0 for clean minimalist aesthetic
+</Accordion>
+
+<Accordion title="Layer 10-11: Overlays & Typography">
+  **Gradient Fades** (`create_gradient_fade()` at line 214-252):
+  - Top and bottom 25% of canvas get alpha-gradient overlay
+  - Creates depth and focuses attention on center
+  - Uses `THEME['gradient_color']` (usually matches background)
+  - Implemented via `ax.imshow()` with custom colormap
+  
+  **Typography** (`create_map_poster.py:683-753`):
+  - All text uses `transform=ax.transAxes` (0-1 normalized coordinates)
+  - Font sizes scale dynamically based on poster dimensions
+  - Latin script detection applies letter spacing for aesthetics
+  - Coordinate formatting adjusts for hemisphere (N/S, E/W)
+</Accordion>
+
+---
+
+## Core Functions Reference
+
+### Geocoding & Data Fetching
+
+<CodeGroup>
+```python create_map_poster.py:319
+def get_coordinates(city, country):
+    """
+    Fetches coordinates for a given city and country using geopy.
+    Includes rate limiting and caching.
+    
+    Returns: (latitude, longitude) tuple
+    Raises: ValueError if geocoding fails
+    """
+```
+
+```python create_map_poster.py:409
+def fetch_graph(point, dist) -> MultiDiGraph | None:
+    """
+    Fetch street network graph from OpenStreetMap.
+    Uses caching to avoid redundant downloads.
+    
+    Args:
+        point: (latitude, longitude) tuple
+        dist: Distance in meters from center
+    
+    Returns: MultiDiGraph or None if fetch fails
+    """
+```
+
+```python create_map_poster.py:444
+def fetch_features(point, dist, tags, name) -> GeoDataFrame | None:
+    """
+    Fetch geographic features (water, parks, etc.) from OSM.
+    
+    Args:
+        point: (latitude, longitude) tuple
+        dist: Distance in meters
+        tags: OSM tag dictionary (e.g., {'natural': 'water'})
+        name: Feature type for caching/logging
+    
+    Returns: GeoDataFrame or None if fetch fails
+    """
+```
+</CodeGroup>
+
+<Note>
+  All fetching functions implement automatic caching using pickle serialization. Cache files are stored in `cache/` directory with sanitized filenames based on parameters.
+</Note>
+
+### Road Styling & Hierarchy
+
+<CodeGroup>
+```python create_map_poster.py:255
+def get_edge_colors_by_type(g):
+    """
+    Assigns colors to edges based on OSM highway tag.
+    Returns list of colors corresponding to each edge.
+    """
+```
+
+```python create_map_poster.py:289
+def get_edge_widths_by_type(g):
+    """
+    Assigns line widths based on road importance.
+    Major roads (motorways) get thicker lines.
+    """
+```
+</CodeGroup>
+
+**OSM Highway Type Mapping:**
+
+| OSM Highway Tag | Theme Color | Line Width | Road Type |
+|----------------|-------------|------------|----------|
+| `motorway`, `motorway_link` | `road_motorway` | 1.2 | Highways/freeways |
+| `trunk`, `primary`, `*_link` | `road_primary` | 1.0 | Major arterials |
+| `secondary`, `secondary_link` | `road_secondary` | 0.8 | Secondary roads |
+| `tertiary`, `tertiary_link` | `road_tertiary` | 0.6 | Tertiary roads |
+| `residential`, `living_street` | `road_residential` | 0.4 | Local streets |
+| Other types | `road_default` | 0.4 | Fallback styling |
+
+<Warning>
+  The `highway` tag can be a list or string. Both functions handle this by taking the first element if it's a list (`create_map_poster.py:267-268`, `299-300`).
+</Warning>
+
+### Rendering & Visual Effects
+
+<CodeGroup>
+```python create_map_poster.py:214
+def create_gradient_fade(ax, color, location="bottom", zorder=10):
+    """
+    Creates alpha-gradient fade at top or bottom of map.
+    Uses numpy gradients with custom matplotlib colormap.
+    """
+```
+
+```python create_map_poster.py:373
+def get_crop_limits(g_proj, center_lat_lon, fig, dist):
+    """
+    Calculate crop boundaries to preserve aspect ratio
+    while guaranteeing full coverage of requested radius.
+    
+    Crops inward from requested distance to match
+    figure width/height aspect ratio.
+    """
+```
+</CodeGroup>
+
+### Typography & Internationalization
+
+```python create_map_poster.py:114
+def is_latin_script(text):
+    """
+    Detects if text is primarily Latin characters.
+    Used to determine if letter-spacing should be applied.
+    
+    Returns: True if >80% of alphabetic chars are in
+             Unicode ranges U+0000-U+024F (Latin blocks)
+    """
+```
+
+**Script Detection Logic:**
+- **Latin scripts** (English, French, Spanish, etc.): Text is uppercased and letter-spaced ("P  A  R  I  S")
+- **Non-Latin scripts** (Japanese, Arabic, Thai, Korean, Chinese): Natural spacing preserved ("東京")
+
+Implementation at `create_map_poster.py:654-660`:
+```python
+if is_latin_script(display_city):
+    spaced_city = "  ".join(list(display_city.upper()))
+else:
+    spaced_city = display_city  # Preserve original
+```
+
+---
+
+## Theme System
+
+### Theme Structure
+
+Themes are JSON files stored in `themes/` directory. Each theme defines a complete color palette:
+
+```json themes/terracotta.json
+{
+  "name": "Terracotta",
+  "description": "Mediterranean warmth - burnt orange and clay tones on cream",
+  "bg": "#F5EDE4",
+  "text": "#8B4513",
+  "gradient_color": "#F5EDE4",
+  "water": "#A8C4C4",
+  "parks": "#E8E0D0",
+  "road_motorway": "#A0522D",
+  "road_primary": "#B8653A",
+  "road_secondary": "#C9846A",
+  "road_tertiary": "#D9A08A",
+  "road_residential": "#E5C4B0",
+  "road_default": "#D9A08A"
+}
+```
+
+### Theme Loading
+
+The `load_theme()` function (`create_map_poster.py:177-207`):
+- Reads JSON from `themes/{theme_name}.json`
+- Falls back to embedded terracotta theme if file not found
+- Returns dictionary accessible via global `THEME` variable
+- Prints theme name and description on load
+
+### Adding Custom Themes
+
+<Steps>
+  <Step title="Create JSON file">
+    Add a new JSON file to `themes/` directory with all required color keys.
+  </Step>
+  
+  <Step title="Define color palette">
+    All colors must be hex codes. Required keys:
+    - `bg`, `text`, `gradient_color`
+    - `water`, `parks`
+    - `road_motorway`, `road_primary`, `road_secondary`, `road_tertiary`, `road_residential`, `road_default`
+  </Step>
+  
+  <Step title="Use the theme">
+    Reference by filename (without `.json`):
+    ```bash
+    python create_map_poster.py -c Tokyo -C Japan -t my_custom_theme
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Font Management
+
+The `font_management.py` module handles typography with support for Google Fonts and local font files.
+
+### Font Loading Pipeline
+
+```python font_management.py:137
+def load_fonts(font_family: Optional[str] = None) -> Optional[dict]:
+    """
+    Load fonts from local directory or download from Google Fonts.
+    Returns dict with 'bold', 'regular', 'light' keys.
+    """
+```
+
+<Accordion title="Local Font Loading (Default)">
+  When no `--font-family` is specified, loads Roboto from `fonts/` directory:
+  - `Roboto-Bold.ttf` → `fonts['bold']`
+  - `Roboto-Regular.ttf` → `fonts['regular']`
+  - `Roboto-Light.ttf` → `fonts['light']`
+  
+  Verifies all files exist before returning (`font_management.py:158-168`).
+</Accordion>
+
+<Accordion title="Google Fonts Integration">
+  The `download_google_font()` function (`font_management.py:17-134`):
+  
+  **Download Process:**
+  1. Queries Google Fonts API for font family with weights 300, 400, 700
+  2. Parses CSS response to extract `.woff2` or `.ttf` URLs
+  3. Downloads font files to `fonts/cache/` directory
+  4. Maps weights to keys: 300→light, 400→regular, 700→bold
+  
+  **Caching:**
+  - Downloaded fonts cached in `fonts/cache/{font_name_safe}_{weight}.woff2`
+  - Subsequent runs use cached files
+  - Fallback to closest available weight if exact weight not found
+  
+  **Usage:**
+  ```bash
+  python create_map_poster.py -c Tokyo -C Japan \
+    -dc "東京" -dC "日本" --font-family "Noto Sans JP"
+  ```
+</Accordion>
+
+### Typography Positioning
+
+All text uses `transform=ax.transAxes` with normalized coordinates (0-1 range):
+
+```text
+y=0.14  City name (spaced for Latin, natural for others)
+y=0.125 Decorative horizontal line
+y=0.10  Country name (always uppercase)
+y=0.07  Coordinates (formatted by hemisphere)
+y=0.02  Attribution ("© OpenStreetMap contributors")
+```
+
+**Dynamic Font Scaling** (`create_map_poster.py:618-681`):
+- Base sizes defined at 12" reference width
+- Scales by `min(height, width) / 12.0` for proper landscape/portrait support
+- City name font reduces for long names (>10 characters) to prevent truncation
+- Coordinate labels adjust format based on latitude/longitude signs
+
+---
+
+## Caching System
+
+### Cache Implementation
+
+MapToPoster uses pickle-based caching to avoid redundant OSM API calls:
+
+<CodeGroup>
+```python create_map_poster.py:53
+def _cache_path(key: str) -> str:
+    """Generate safe cache file path from cache key."""
+    safe = key.replace(os.sep, "_")
+    return os.path.join(CACHE_DIR, f"{safe}.pkl")
+```
+
+```python create_map_poster.py:67
+def cache_get(key: str):
+    """Retrieve cached object by key. Returns None if not found."""
+```
+
+```python create_map_poster.py:90
+def cache_set(key: str, value):
+    """Store picklable object in cache."""
+```
+</CodeGroup>
+
+### Cached Data Types
+
+| Cache Key Format | Data Type | Example |
+|-----------------|-----------|----------|
+| `coords_{city}_{country}` | `(lat, lon)` tuple | Geocoding results |
+| `graph_{lat}_{lon}_{dist}` | `MultiDiGraph` | Street network |
+| `{name}_{lat}_{lon}_{dist}_{tags}` | `GeoDataFrame` | Water/parks features |
+
+<Note>
+  Cache directory location can be customized via `CACHE_DIR` environment variable. Defaults to `cache/` in project root.
+</Note>
+
+### Cache Invalidation
+
+Cache files persist indefinitely unless manually deleted. To refresh data:
+
+```bash
+# Clear all cached data
+rm -rf cache/
+
+# Clear only graph cache for specific location
+rm cache/graph_*.pkl
+
+# Clear specific city coordinates
+rm cache/coords_tokyo_japan.pkl
+```
+
+---
+
+## Performance Considerations
+
+<Accordion title="Optimal Distance Values">
+  Large distance values can significantly impact performance:
+  
+  - **< 20km**: Fast downloads, reasonable memory usage
+  - **20-30km**: Slower, higher memory consumption
+  - **> 30km**: Very slow, may hit API limits or memory issues
+  
+  **Recommendation**: Use smallest distance that captures desired area. See [Distance Guide](/usage/distance-guide).
+</Accordion>
+
+<Accordion title="Network Type Optimization">
+  The default `network_type='all'` includes all road types. For faster renders:
+  
+  ```python
+  # In fetch_graph(), line 431
+  g = ox.graph_from_point(point, dist=dist, network_type='drive')  # Roads only
+  ```
+  
+  Other options: `'bike'`, `'walk'` (see [OSMnx documentation](https://osmnx.readthedocs.io/)).
+</Accordion>
+
+<Accordion title="Preview Renders">
+  Reduce DPI for quick previews:
+  
+  ```python
+  # In create_poster(), line 767
+  save_kwargs["dpi"] = 150  # Instead of 300
+  ```
+  
+  Cuts file size and render time by ~75%.
+</Accordion>
+
+<Accordion title="API Rate Limiting">
+  Implemented delays to respect service policies:
+  - Nominatim geocoding: 1.0s delay (`create_map_poster.py:334`)
+  - OSMnx graph fetch: 0.5s delay (`create_map_poster.py:433`)
+  - OSMnx features fetch: 0.3s delay (`create_map_poster.py:471`)
+  
+  **Note**: First run for a location is always slow due to API calls. Subsequent runs use cache and are near-instant.
+</Accordion>
+
+---
+
+## Extension Points
+
+### Adding New Map Layers
+
+To add a new layer (e.g., railways, buildings):
+
+```python
+# In create_poster(), after parks fetch (~line 558):
+try:
+    railways = ox.features_from_point(
+        point, 
+        tags={'railway': 'rail'}, 
+        dist=compensated_dist
+    )
+except:
+    railways = None
+
+# Then plot before roads (~line 594):
+if railways is not None and not railways.empty:
+    railways_polys = railways[railways.geometry.type.isin(["LineString", "MultiLineString"])]
+    if not railways_polys.empty:
+        railways_polys = railways_polys.to_crs(g_proj.graph['crs'])
+        railways_polys.plot(ax=ax, color=THEME['railway'], linewidth=0.5, zorder=2.5)
+```
+
+**Don't forget to:**
+1. Add `"railway": "#FF0000"` to all theme JSON files
+2. Add fallback color in `load_theme()` default dict
+
+### Useful OSMnx Tag Patterns
+
+```python
+# Buildings
+buildings = ox.features_from_point(point, tags={'building': True}, dist=dist)
+
+# Specific amenities
+cafes = ox.features_from_point(point, tags={'amenity': 'cafe'}, dist=dist)
+schools = ox.features_from_point(point, tags={'amenity': 'school'}, dist=dist)
+
+# Different network types
+G = ox.graph_from_point(point, dist=dist, network_type='bike')   # Bike paths
+G = ox.graph_from_point(point, dist=dist, network_type='walk')   # Pedestrian
+```
+
+See [OSM Wiki](https://wiki.openstreetmap.org/wiki/Map_features) for complete tag reference.
+
+### Custom Theme Properties
+
+To add a new color property (e.g., for railways):
+
+<Steps>
+  <Step title="Update all theme JSON files">
+    Add the new key to every theme in `themes/`:
+    ```json
+    {
+      "railway": "#FF0000",
+      // ... existing properties
+    }
+    ```
+  </Step>
+  
+  <Step title="Add fallback in load_theme()">
+    Update the default theme dict at `create_map_poster.py:186-200`:
+    ```python
+    return {
+        "railway": "#333333",  # Add fallback
+        "name": "Terracotta",
+        # ... existing fallbacks
+    }
+    ```
+  </Step>
+  
+  <Step title="Use in rendering code">
+    Reference via `THEME['railway']` in your layer plotting code.
+  </Step>
+</Steps>
+
+---
+
+## Dependencies
+
+Core Python packages used:
+
+| Package | Purpose | Key Usage |
+|---------|---------|----------|
+| `osmnx` | OpenStreetMap data fetching | Graph and feature downloads |
+| `matplotlib` | Rendering and plotting | Figure creation, layer composition |
+| `geopandas` | Geographic data handling | Feature dataframes, CRS projection |
+| `geopy` | Geocoding | City/country → coordinates |
+| `shapely` | Geometric operations | Point creation, geometry filtering |
+| `networkx` | Graph data structures | Street network storage |
+| `numpy` | Numerical operations | Gradient generation, array math |
+| `requests` | HTTP requests | Google Fonts downloading |
+| `tqdm` | Progress bars | User feedback during data fetching |
+
+Full dependency list in `pyproject.toml` and `requirements.txt`.

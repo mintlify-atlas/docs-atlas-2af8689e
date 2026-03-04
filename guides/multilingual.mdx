@@ -1,0 +1,429 @@
+---
+title: 'Multilingual Support'
+description: 'Display city names in any language with custom fonts from Google Fonts'
+---
+
+MapToPoster supports displaying city and country names in any language, including non-Latin scripts like Japanese, Arabic, Korean, Thai, Chinese, and more. Fonts are automatically downloaded from Google Fonts and cached locally.
+
+## Overview
+
+The multilingual system provides:
+
+- **Custom display names** for city and country in any language
+- **Automatic font downloading** from Google Fonts catalog
+- **Local font caching** to avoid repeated downloads
+- **Script detection** for proper typography (Latin vs. non-Latin)
+- **Fallback handling** for missing fonts
+
+## Basic Usage
+
+### Display Names
+
+Use `--display-city` and `--display-country` to override the displayed text:
+
+```bash
+python create_map_poster.py \
+  -c "Tokyo" \
+  -C "Japan" \
+  -dc "東京" \
+  -dC "日本"
+```
+
+<Note>
+The `-c` and `-C` flags are still required for geocoding (finding the city location). The display flags only change what appears on the poster.
+</Note>
+
+### Custom Fonts
+
+Specify any font from [Google Fonts](https://fonts.google.com/) using `--font-family`:
+
+```bash
+python create_map_poster.py \
+  -c "Tokyo" \
+  -C "Japan" \
+  -dc "東京" \
+  -dC "日本" \
+  --font-family "Noto Sans JP"
+```
+
+The font is automatically:
+1. Downloaded from Google Fonts API
+2. Cached in `fonts/cache/`
+3. Loaded for text rendering
+
+## Language Examples
+
+<Tabs>
+  <Tab title="Japanese">
+    ```bash
+    python create_map_poster.py \
+      -c "Tokyo" -C "Japan" \
+      -dc "東京" -dC "日本" \
+      --font-family "Noto Sans JP" \
+      -t japanese_ink
+    ```
+
+    **Recommended Fonts:**
+    - Noto Sans JP (modern, clean)
+    - Noto Serif JP (traditional, elegant)
+    - M PLUS Rounded 1c (rounded, friendly)
+    - Zen Kaku Gothic New (contemporary)
+
+    **Other Cities:**
+    ```bash
+    # Osaka (大阪)
+    python create_map_poster.py -c "Osaka" -C "Japan" -dc "大阪" -dC "日本" --font-family "Noto Sans JP"
+
+    # Kyoto (京都)
+    python create_map_poster.py -c "Kyoto" -C "Japan" -dc "京都" -dC "日本" --font-family "Noto Serif JP"
+    ```
+  </Tab>
+
+  <Tab title="Korean">
+    ```bash
+    python create_map_poster.py \
+      -c "Seoul" -C "South Korea" \
+      -dc "서울" -dC "대한민국" \
+      --font-family "Noto Sans KR" \
+      -t midnight_blue
+    ```
+
+    **Recommended Fonts:**
+    - Noto Sans KR (clean, modern)
+    - Noto Serif KR (traditional)
+    - Black Han Sans (bold display)
+    - Nanum Gothic (versatile)
+
+    **Other Cities:**
+    ```bash
+    # Busan (부산)
+    python create_map_poster.py -c "Busan" -C "South Korea" -dc "부산" -dC "대한민국" --font-family "Noto Sans KR"
+    ```
+  </Tab>
+
+  <Tab title="Arabic">
+    ```bash
+    python create_map_poster.py \
+      -c "Dubai" -C "UAE" \
+      -dc "دبي" -dC "الإمارات" \
+      --font-family "Cairo" \
+      -t terracotta
+    ```
+
+    **Recommended Fonts:**
+    - Cairo (modern, geometric)
+    - Amiri (traditional, classical)
+    - Tajawal (clean, versatile)
+    - Almarai (contemporary)
+
+    **Other Cities:**
+    ```bash
+    # Riyadh (الرياض)
+    python create_map_poster.py -c "Riyadh" -C "Saudi Arabia" -dc "الرياض" -dC "السعودية" --font-family "Cairo"
+
+    # Marrakech (مراكش)
+    python create_map_poster.py -c "Marrakech" -C "Morocco" -dc "مراكش" -dC "المغرب" --font-family "Amiri"
+    ```
+  </Tab>
+
+  <Tab title="Chinese">
+    ```bash
+    # Simplified Chinese
+    python create_map_poster.py \
+      -c "Beijing" -C "China" \
+      -dc "北京" -dC "中国" \
+      --font-family "Noto Sans SC"
+
+    # Traditional Chinese
+    python create_map_poster.py \
+      -c "Taipei" -C "Taiwan" \
+      -dc "台北" -dC "台灣" \
+      --font-family "Noto Sans TC"
+    ```
+
+    **Recommended Fonts:**
+    - Noto Sans SC (Simplified, modern)
+    - Noto Sans TC (Traditional, modern)
+    - Noto Serif SC (Simplified, serif)
+    - Noto Serif TC (Traditional, serif)
+    - ZCOOL XiaoWei (stylized)
+
+    **Other Cities:**
+    ```bash
+    # Shanghai (上海)
+    python create_map_poster.py -c "Shanghai" -C "China" -dc "上海" -dC "中国" --font-family "Noto Sans SC"
+
+    # Hong Kong (香港)
+    python create_map_poster.py -c "Hong Kong" -C "China" -dc "香港" -dC "中國" --font-family "Noto Sans TC"
+    ```
+  </Tab>
+
+  <Tab title="Thai">
+    ```bash
+    python create_map_poster.py \
+      -c "Bangkok" -C "Thailand" \
+      -dc "กรุงเทพมหานคร" -dC "ประเทศไทย" \
+      --font-family "Noto Sans Thai" \
+      -t sunset
+    ```
+
+    **Recommended Fonts:**
+    - Noto Sans Thai
+    - Noto Serif Thai
+    - Kanit (modern)
+    - Prompt (clean)
+
+    **Other Cities:**
+    ```bash
+    # Chiang Mai (เชียงใหม่)
+    python create_map_poster.py -c "Chiang Mai" -C "Thailand" -dc "เชียงใหม่" -dC "ประเทศไทย" --font-family "Noto Sans Thai"
+    ```
+  </Tab>
+
+  <Tab title="Khmer">
+    ```bash
+    python create_map_poster.py \
+      -c "Phnom Penh" -C "Cambodia" \
+      -dc "ភ្នំពេញ" -dC "កម្ពុជា" \
+      --font-family "Noto Sans Khmer"
+    ```
+
+    **Recommended Fonts:**
+    - Noto Sans Khmer
+    - Noto Serif Khmer
+    - Battambang
+  </Tab>
+
+  <Tab title="Greek">
+    ```bash
+    python create_map_poster.py \
+      -c "Athens" -C "Greece" \
+      -dc "Αθήνα" -dC "Ελλάδα" \
+      --font-family "Noto Sans"
+    ```
+
+    **Other Cities:**
+    ```bash
+    # Thessaloniki (Θεσσαλονίκη)
+    python create_map_poster.py -c "Thessaloniki" -C "Greece" -dc "Θεσσαλονίκη" -dC "Ελλάδα" --font-family "Noto Sans"
+    ```
+  </Tab>
+
+  <Tab title="Hebrew">
+    ```bash
+    python create_map_poster.py \
+      -c "Tel Aviv" -C "Israel" \
+      -dc "תל אביב" -dC "ישראל" \
+      --font-family "Noto Sans Hebrew"
+    ```
+
+    **Recommended Fonts:**
+    - Noto Sans Hebrew
+    - Noto Serif Hebrew
+    - Heebo (modern)
+  </Tab>
+
+  <Tab title="Russian">
+    ```bash
+    python create_map_poster.py \
+      -c "Moscow" -C "Russia" \
+      -dc "Москва" -dC "Россия" \
+      --font-family "Noto Sans"
+    ```
+
+    **Other Cities:**
+    ```bash
+    # Saint Petersburg (Санкт-Петербург)
+    python create_map_poster.py -c "Saint Petersburg" -C "Russia" -dc "Санкт-Петербург" -dC "Россия" --font-family "Noto Sans"
+    ```
+  </Tab>
+</Tabs>
+
+## Typography Behavior
+
+### Script Detection
+
+The tool automatically detects whether text is Latin or non-Latin:
+
+**Latin Scripts** (English, French, Spanish, etc.):
+- Letter spacing applied for elegant aesthetics
+- Example: "P A R I S" (spaces between letters)
+
+**Non-Latin Scripts** (Japanese, Arabic, Thai, etc.):
+- Natural spacing preserved
+- Example: "東京" (no artificial gaps)
+
+This ensures proper typography for all languages without manual configuration.
+
+### Text Positioning
+
+All text is positioned using normalized coordinates:
+
+```
+y=0.14  City name (spaced for Latin, natural for non-Latin)
+y=0.125 Decorative line
+y=0.10  Country name
+y=0.07  Coordinates
+```
+
+## Font Management
+
+### Automatic Caching
+
+Fonts are cached in `fonts/cache/` after first download:
+
+```
+fonts/
+├── Roboto-Light.ttf      # Default fonts
+├── Roboto-Regular.ttf
+├── Roboto-Bold.ttf
+└── cache/
+    ├── Noto_Sans_JP-Regular.ttf
+    ├── Noto_Sans_KR-Regular.ttf
+    ├── Cairo-Regular.ttf
+    └── ...
+```
+
+### Manual Font Installation
+
+You can also manually place fonts in `fonts/cache/`:
+
+1. Download `.ttf` file from Google Fonts
+2. Place in `fonts/cache/` directory
+3. Use the font family name with `--font-family`
+
+### Finding Google Fonts
+
+Browse available fonts at [fonts.google.com](https://fonts.google.com/):
+
+1. Filter by language/script
+2. Copy the font family name
+3. Use exact name with `--font-family`
+
+<Tip>
+Font names are case-sensitive and must match exactly as shown on Google Fonts.
+</Tip>
+
+## Complete Examples
+
+### Japanese with Custom Theme
+
+```bash
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -dc "東京" -dC "日本" \
+  --font-family "Noto Sans JP" \
+  -t japanese_ink \
+  -d 15000
+```
+
+### Arabic with Multiple Flags
+
+```bash
+python create_map_poster.py \
+  -c "Dubai" -C "UAE" \
+  -dc "دبي" -dC "الإمارات" \
+  --font-family "Cairo" \
+  -t midnight_blue \
+  -d 15000 \
+  -W 12 -H 16
+```
+
+### Korean with All Themes
+
+```bash
+python create_map_poster.py \
+  -c "Seoul" -C "South Korea" \
+  -dc "서울" -dC "대한민국" \
+  --font-family "Noto Sans KR" \
+  --all-themes
+```
+
+### Chinese with Custom Coordinates
+
+```bash
+python create_map_poster.py \
+  -c "Beijing" -C "China" \
+  -dc "北京" -dC "中国" \
+  --font-family "Noto Sans SC" \
+  -lat 39.9042 -long 116.4074 \
+  -t noir
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Font not found on Google Fonts">
+    Ensure the font name matches exactly as shown on [fonts.google.com](https://fonts.google.com/). Font names are case-sensitive.
+
+    ```bash
+    # Correct
+    --font-family "Noto Sans JP"
+
+    # Incorrect
+    --font-family "noto sans jp"
+    --font-family "Noto-Sans-JP"
+    ```
+  </Accordion>
+
+  <Accordion title="Characters not displaying correctly">
+    Make sure the font you selected supports the script you're using. Check the font's supported languages on Google Fonts.
+
+    For example:
+    - Use "Noto Sans JP" for Japanese (not "Roboto")
+    - Use "Cairo" for Arabic (not "Open Sans")
+    - Use "Noto Sans KR" for Korean
+  </Accordion>
+
+  <Accordion title="Text appears too spaced out">
+    This is normal for Latin scripts. The tool applies letter spacing for aesthetics ("P A R I S").
+
+    For non-Latin scripts, spacing is not applied. If you see unwanted spacing in Japanese/Arabic/etc., the tool may be incorrectly detecting the script. File a bug report.
+  </Accordion>
+
+  <Accordion title="Font download fails">
+    If font downloads fail:
+
+    1. Check your internet connection
+    2. Verify the font exists on Google Fonts
+    3. Try downloading manually and placing in `fonts/cache/`
+    4. Check the font file name matches the pattern: `Font_Name-Regular.ttf`
+  </Accordion>
+
+  <Accordion title="Using system fonts instead of Google Fonts">
+    The tool is designed for Google Fonts integration. To use system fonts:
+
+    1. Copy the `.ttf` file to `fonts/cache/`
+    2. Use the font family name with `--font-family`
+
+    Note: The tool expects TrueType fonts (`.ttf` format).
+  </Accordion>
+</AccordionGroup>
+
+## Font Recommendations by Script
+
+| Script | Language Examples | Recommended Fonts |
+|--------|-------------------|-------------------|
+| Japanese | 日本語 | Noto Sans JP, Noto Serif JP, M PLUS Rounded 1c |
+| Korean | 한국어 | Noto Sans KR, Noto Serif KR, Black Han Sans |
+| Chinese (Simp.) | 简体中文 | Noto Sans SC, Noto Serif SC, ZCOOL XiaoWei |
+| Chinese (Trad.) | 繁體中文 | Noto Sans TC, Noto Serif TC |
+| Arabic | العربية | Cairo, Amiri, Tajawal, Almarai |
+| Thai | ไทย | Noto Sans Thai, Kanit, Prompt |
+| Hebrew | עברית | Noto Sans Hebrew, Heebo |
+| Greek | Ελληνικά | Noto Sans, Roboto |
+| Cyrillic | Кириллица | Noto Sans, Roboto, Montserrat |
+| Devanagari | देवनागरी | Noto Sans Devanagari, Poppins |
+| Bengali | বাংলা | Noto Sans Bengali, Hind Siliguri |
+| Tamil | தமிழ் | Noto Sans Tamil, Pavanam |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Theme Gallery" icon="palette" href="/guides/themes">
+    Explore all 17 built-in themes
+  </Card>
+  <Card title="Advanced Examples" icon="code" href="/guides/advanced-examples">
+    See complex multilingual examples with custom coordinates
+  </Card>
+</CardGroup>

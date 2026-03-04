@@ -1,0 +1,313 @@
+---
+title: Command Reference
+description: Complete reference for all MapToPoster command-line flags and options
+---
+
+## Command Syntax
+
+```bash
+python create_map_poster.py [required] [optional flags]
+```
+
+## Required Arguments
+
+<ParamField path="--city" type="string" required>
+  **City name** for geocoding and poster label.
+  
+  **Alias**: `-c`
+  
+  **Examples**:
+  ```bash
+  --city "Paris"
+  -c "New York"
+  ```
+</ParamField>
+
+<ParamField path="--country" type="string" required>
+  **Country name** for geocoding disambiguation.
+  
+  **Alias**: `-C`
+  
+  **Examples**:
+  ```bash
+  --country "France"
+  -C "USA"
+  ```
+</ParamField>
+
+## Location Overrides
+
+<ParamField path="--latitude" type="string">
+  Override map center latitude. Must be used with `--longitude`.
+  
+  **Alias**: `-lat`
+  
+  **Supports multiple formats**:
+  - Decimal: `40.7128`
+  - Decimal with direction: `40.7128° N`
+  - Degrees/Minutes/Seconds: `40°42'46\" N`
+  
+  **Examples**:
+  ```bash
+  --latitude 40.7128
+  -lat "51.5074° N"
+  ```
+</ParamField>
+
+<ParamField path="--longitude" type="string">
+  Override map center longitude. Must be used with `--latitude`.
+  
+  **Alias**: `-long`
+  
+  **Supports multiple formats**:
+  - Decimal: `-74.0060`
+  - Decimal with direction: `74.0060° W`
+  - Degrees/Minutes/Seconds: `74°0'21\" W`
+  
+  **Examples**:
+  ```bash
+  --longitude -74.0060
+  -long "0.1278° W"
+  ```
+</ParamField>
+
+<Warning>
+When using coordinate overrides, **both** `--latitude` and `--longitude` must be provided. The geocoding service will be completely bypassed.
+</Warning>
+
+## Map Configuration
+
+<ParamField path="--distance" type="integer" default="18000">
+  Map radius in **meters** from the center point.
+  
+  **Alias**: `-d`
+  
+  **Typical ranges**:
+  - Small cities / high detail: `4000-6000`
+  - Medium cities / downtown focus: `8000-12000`
+  - Large metros / full coverage: `15000-20000`
+  
+  **Examples**:
+  ```bash
+  --distance 10000
+  -d 15000
+  ```
+  
+  See [Distance Guide](/usage/distance-guide) for detailed recommendations.
+</ParamField>
+
+<ParamField path="--theme" type="string" default="terracotta">
+  Theme name for color scheme. Theme must exist in `themes/` directory.
+  
+  **Alias**: `-t`
+  
+  **Examples**:
+  ```bash
+  --theme noir
+  -t midnight_blue
+  ```
+  
+  Use `--list-themes` to see all available themes.
+</ParamField>
+
+<ParamField path="--all-themes" type="boolean">
+  Generate posters for **all available themes** in a single run.
+  
+  **Alias**: `--All-themes`
+  
+  **Example**:
+  ```bash
+  python create_map_poster.py -c "Tokyo" -C "Japan" --all-themes
+  ```
+  
+  This will create separate poster files for every theme in the `themes/` directory.
+</ParamField>
+
+## Dimensions & Output
+
+<ParamField path="--width" type="float" default="12">
+  Output image width in **inches** (at 300 DPI).
+  
+  **Alias**: `-W`
+  
+  **Maximum**: 20 inches (enforced automatically)
+  
+  **Examples**:
+  ```bash
+  --width 12.8    # 4K width
+  -W 3.6          # Instagram square
+  ```
+</ParamField>
+
+<ParamField path="--height" type="float" default="16">
+  Output image height in **inches** (at 300 DPI).
+  
+  **Alias**: `-H`
+  
+  **Maximum**: 20 inches (enforced automatically)
+  
+  **Examples**:
+  ```bash
+  --height 7.2    # 4K height
+  -H 6.4          # Mobile wallpaper
+  ```
+</ParamField>
+
+<ParamField path="--format" type="string" default="png">
+  Output file format.
+  
+  **Alias**: `-f`
+  
+  **Choices**: `png`, `svg`, `pdf`
+  
+  **Examples**:
+  ```bash
+  --format svg
+  -f pdf
+  ```
+  
+  <Note>
+  PNG exports at 300 DPI for high-quality printing. SVG and PDF are vector formats that scale infinitely.
+  </Note>
+</ParamField>
+
+## Internationalization (i18n)
+
+<ParamField path="--display-city" type="string">
+  Custom display name for city on the poster (supports non-Latin scripts).
+  
+  **Alias**: `-dc`
+  
+  **Examples**:
+  ```bash
+  -dc "東京"          # Tokyo in Japanese
+  -dc "دبي"          # Dubai in Arabic
+  -dc "서울"          # Seoul in Korean
+  ```
+</ParamField>
+
+<ParamField path="--display-country" type="string">
+  Custom display name for country on the poster (supports non-Latin scripts).
+  
+  **Alias**: `-dC`
+  
+  **Examples**:
+  ```bash
+  -dC "日本"         # Japan in Japanese
+  -dC "الإمارات"    # UAE in Arabic
+  -dC "대한민국"      # South Korea in Korean
+  ```
+</ParamField>
+
+<ParamField path="--font-family" type="string">
+  Google Fonts family name for custom typography. Automatically downloads and caches fonts.
+  
+  **Examples**:
+  ```bash
+  --font-family "Noto Sans JP"      # Japanese
+  --font-family "Cairo"             # Arabic
+  --font-family "Noto Sans KR"      # Korean
+  --font-family "Noto Sans Thai"    # Thai
+  ```
+  
+  <Note>
+  If not specified, uses local Roboto fonts. Downloaded fonts are cached in `fonts/cache/` for future use.
+  </Note>
+</ParamField>
+
+### Multilingual Example
+
+```bash
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -dc "東京" -dC "日本" \
+  --font-family "Noto Sans JP" \
+  -t japanese_ink
+```
+
+## Label Overrides
+
+<ParamField path="--country-label" type="string">
+  Override the country text displayed on the poster (legacy option).
+  
+  **Example**:
+  ```bash
+  --country-label "United Kingdom"
+  ```
+  
+  <Info>
+  For multilingual support, use `--display-country` instead.
+  </Info>
+</ParamField>
+
+## Utility Commands
+
+<ParamField path="--list-themes" type="boolean">
+  List all available themes with descriptions and exit.
+  
+  **Example**:
+  ```bash
+  python create_map_poster.py --list-themes
+  ```
+  
+  **Output**:
+  ```
+  Available Themes:
+  ------------------------------------------------------------
+    terracotta
+      Terracotta
+      Mediterranean warmth - burnt orange and clay tones on cream
+
+    noir
+      Noir
+      Pure black background, white roads
+  ```
+</ParamField>
+
+## Complete Example
+
+```bash
+python create_map_poster.py \
+  --city "San Francisco" \
+  --country "USA" \
+  --theme sunset \
+  --distance 10000 \
+  --width 12.8 \
+  --height 7.2 \
+  --format png
+```
+
+This generates a 4K desktop wallpaper of San Francisco with the sunset theme.
+
+## Argument Aliases Quick Reference
+
+| Full Flag | Short | Description |
+|-----------|-------|-------------|
+| `--city` | `-c` | City name |
+| `--country` | `-C` | Country name |
+| `--latitude` | `-lat` | Override latitude |
+| `--longitude` | `-long` | Override longitude |
+| `--theme` | `-t` | Theme name |
+| `--distance` | `-d` | Map radius (meters) |
+| `--width` | `-W` | Width in inches |
+| `--height` | `-H` | Height in inches |
+| `--format` | `-f` | Output format |
+| `--display-city` | `-dc` | Display name for city |
+| `--display-country` | `-dC` | Display name for country |
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Basic Usage" icon="rocket" href="/usage/basic-usage">
+    Common usage patterns and examples
+  </Card>
+  <Card title="Resolution Guide" icon="image" href="/usage/resolution-guide">
+    Dimension presets for different use cases
+  </Card>
+  <Card title="Distance Guide" icon="map" href="/usage/distance-guide">
+    Choosing the right map radius
+  </Card>
+  <Card title="Themes" icon="palette" href="/guides/themes">
+    Explore available color themes
+  </Card>
+</CardGroup>

@@ -1,0 +1,600 @@
+---
+title: 'Custom Themes'
+description: 'Create your own theme JSON files to customize map poster aesthetics'
+---
+
+MapToPoster themes are defined as JSON files in the `themes/` directory. Creating custom themes is simple and requires no code changes.
+
+## Theme Structure
+
+### Complete Schema
+
+A theme JSON file contains 11 required properties:
+
+```json
+{
+  "name": "My Custom Theme",
+  "description": "A brief description of the theme aesthetic",
+  "bg": "#FFFFFF",
+  "text": "#000000",
+  "gradient_color": "#FFFFFF",
+  "water": "#C0C0C0",
+  "parks": "#F0F0F0",
+  "road_motorway": "#0A0A0A",
+  "road_primary": "#1A1A1A",
+  "road_secondary": "#2A2A2A",
+  "road_tertiary": "#3A3A3A",
+  "road_residential": "#4A4A4A",
+  "road_default": "#3A3A3A"
+}
+```
+
+### Property Reference
+
+<ResponseField name="name" type="string" required>
+  Display name of the theme (used in `--list-themes` output)
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  Brief description of the aesthetic and use case
+</ResponseField>
+
+<ResponseField name="bg" type="hex color" required>
+  Background color for the entire poster
+</ResponseField>
+
+<ResponseField name="text" type="hex color" required>
+  Color for city name, country name, and coordinates text
+</ResponseField>
+
+<ResponseField name="gradient_color" type="hex color" required>
+  Color used for top/bottom gradient fade effect. Usually matches `bg` for subtle fade.
+</ResponseField>
+
+<ResponseField name="water" type="hex color" required>
+  Color for water features (rivers, lakes, ocean)
+</ResponseField>
+
+<ResponseField name="parks" type="hex color" required>
+  Color for parks and green spaces
+</ResponseField>
+
+<ResponseField name="road_motorway" type="hex color" required>
+  Color for major highways and motorways (thickest roads)
+</ResponseField>
+
+<ResponseField name="road_primary" type="hex color" required>
+  Color for primary roads and main streets
+</ResponseField>
+
+<ResponseField name="road_secondary" type="hex color" required>
+  Color for secondary roads
+</ResponseField>
+
+<ResponseField name="road_tertiary" type="hex color" required>
+  Color for tertiary roads
+</ResponseField>
+
+<ResponseField name="road_residential" type="hex color" required>
+  Color for residential streets (thinnest roads)
+</ResponseField>
+
+<ResponseField name="road_default" type="hex color" required>
+  Fallback color for roads without specific classification
+</ResponseField>
+
+## Creating a Custom Theme
+
+### Step 1: Create JSON File
+
+Create a new `.json` file in the `themes/` directory:
+
+```bash
+touch themes/my_theme.json
+```
+
+<Tip>
+The filename (without `.json`) becomes the theme identifier used with `--theme`.
+</Tip>
+
+### Step 2: Define Colors
+
+Add your color palette:
+
+```json themes/my_theme.json
+{
+  "name": "My Custom Theme",
+  "description": "Dark background with vibrant green roads",
+  "bg": "#1A1A1A",
+  "text": "#FFFFFF",
+  "gradient_color": "#1A1A1A",
+  "water": "#0A2F3F",
+  "parks": "#2A3A2A",
+  "road_motorway": "#00FF00",
+  "road_primary": "#00DD00",
+  "road_secondary": "#00BB00",
+  "road_tertiary": "#009900",
+  "road_residential": "#007700",
+  "road_default": "#009900"
+}
+```
+
+### Step 3: Use Your Theme
+
+Reference by filename (without `.json`):
+
+```bash
+python create_map_poster.py -c "Paris" -C "France" -t my_theme
+```
+
+## Design Guidelines
+
+### Road Hierarchy
+
+Roads should follow a visual hierarchy from major to minor:
+
+```
+road_motorway     → Most prominent (highways, interstates)
+road_primary      → Very visible (main streets)
+road_secondary    → Visible (major roads)
+road_tertiary     → Subtle (minor roads)
+road_residential  → Most subtle (local streets)
+```
+
+**Visual Weight Strategies:**
+
+<Tabs>
+  <Tab title="Gradient (Recommended)">
+    Use a smooth gradient from dark to light:
+
+    ```json
+    "road_motorway": "#000000",     // Darkest
+    "road_primary": "#2A2A2A",
+    "road_secondary": "#555555",
+    "road_tertiary": "#808080",
+    "road_residential": "#AAAAAA"  // Lightest
+    ```
+
+    **Best for:** Most themes, creates natural depth
+  </Tab>
+
+  <Tab title="Saturation">
+    Use a single hue with varying saturation:
+
+    ```json
+    "road_motorway": "#FF0000",     // Full saturation
+    "road_primary": "#DD3333",
+    "road_secondary": "#BB6666",
+    "road_tertiary": "#AA8888",
+    "road_residential": "#99AAAA"  // Desaturated
+    ```
+
+    **Best for:** Colorful themes, artistic aesthetics
+  </Tab>
+
+  <Tab title="Opacity (via Alpha)">
+    Note: Hex colors don't support alpha in the current implementation. Use lightness instead:
+
+    ```json
+    "road_motorway": "#0066CC",     // Full color
+    "road_primary": "#3385D6",      // Lighter
+    "road_secondary": "#66A3E0",
+    "road_tertiary": "#99C2EA",
+    "road_residential": "#CCE0F4"  // Very light
+    ```
+  </Tab>
+
+  <Tab title="Two-Tone">
+    Use one color for major roads, another for minor:
+
+    ```json
+    "road_motorway": "#FF00FF",     // Accent color
+    "road_primary": "#00FFFF",      // Accent color
+    "road_secondary": "#00DDDD",    // Transition
+    "road_tertiary": "#00BBBB",     // Base color
+    "road_residential": "#009999"   // Base color
+    ```
+
+    **Best for:** Bold, high-contrast themes (cyberpunk, neon)
+  </Tab>
+</Tabs>
+
+### Contrast & Readability
+
+**Background vs. Roads:**
+- Ensure sufficient contrast between `bg` and road colors
+- Test with both dense cities (many roads) and sparse cities (few roads)
+
+**Background vs. Text:**
+- Text must be clearly readable against `bg`
+- Aim for WCAG AA contrast ratio (4.5:1 minimum)
+
+**Water & Parks:**
+- Should be distinguishable from `bg` but subtle
+- Usually slightly lighter or darker than `bg`
+
+### Color Harmony
+
+<AccordionGroup>
+  <Accordion title="Monochromatic" icon="droplet">
+    Use a single hue with varying lightness/saturation:
+
+    ```json
+    {
+      "bg": "#F5F8FA",           // Very light blue
+      "text": "#1A3A5C",         // Dark blue
+      "water": "#D0E0F0",        // Light blue
+      "parks": "#E0EAF2",        // Very light blue
+      "road_motorway": "#1A3A5C",   // Dark blue
+      "road_primary": "#2A5580",
+      "road_secondary": "#4A7AA8",
+      "road_tertiary": "#7AA0C8",
+      "road_residential": "#A8C4E0"
+    }
+    ```
+
+    **Examples:** Monochrome Blue, Ocean
+  </Accordion>
+
+  <Accordion title="Analogous" icon="palette">
+    Use adjacent colors on the color wheel:
+
+    ```json
+    {
+      "bg": "#FDF5F0",           // Warm cream
+      "text": "#C45C3E",         // Orange-red
+      "water": "#F0D8D0",        // Pink
+      "parks": "#F8E8E0",        // Peach
+      "road_motorway": "#C45C3E",   // Orange-red
+      "road_primary": "#D87A5A",    // Orange
+      "road_secondary": "#E8A088",  // Peach
+      "road_tertiary": "#F0B8A8",   // Light peach
+      "road_residential": "#F5D0C8" // Very light peach
+    }
+    ```
+
+    **Examples:** Sunset, Autumn, Terracotta
+  </Accordion>
+
+  <Accordion title="Complementary" icon="circle-half-stroke">
+    Use opposite colors on the color wheel:
+
+    ```json
+    {
+      "bg": "#E8F0F0",           // Light cyan
+      "text": "#2A5A5A",         // Teal
+      "water": "#C0D8D8",        // Light teal
+      "parks": "#D8E8E0",        // Pale cyan
+      "road_motorway": "#B87333",   // Copper (opposite of teal)
+      "road_primary": "#5A8A8A",    // Teal
+      "road_secondary": "#6B9E9E",
+      "road_tertiary": "#88B4B4",
+      "road_residential": "#A8CCCC"
+    }
+    ```
+
+    **Examples:** Copper Patina
+  </Accordion>
+
+  <Accordion title="High Contrast" icon="adjust">
+    Maximum contrast for dramatic effect:
+
+    ```json
+    {
+      "bg": "#000000",           // Pure black
+      "text": "#FFFFFF",         // Pure white
+      "water": "#0A0A0A",        // Near black
+      "parks": "#111111",        // Dark gray
+      "road_motorway": "#FFFFFF",   // Pure white
+      "road_primary": "#E0E0E0",
+      "road_secondary": "#B0B0B0",
+      "road_tertiary": "#808080",
+      "road_residential": "#505050"
+    }
+    ```
+
+    **Examples:** Noir, Contrast Zones
+  </Accordion>
+</AccordionGroup>
+
+## Example Themes
+
+### Example 1: Retro Gameboy
+
+```json themes/gameboy.json
+{
+  "name": "Retro Gameboy",
+  "description": "Classic Game Boy green screen aesthetic",
+  "bg": "#9BBC0F",
+  "text": "#0F380F",
+  "gradient_color": "#9BBC0F",
+  "water": "#8BAC0F",
+  "parks": "#9BBC0F",
+  "road_motorway": "#0F380F",
+  "road_primary": "#306230",
+  "road_secondary": "#0F380F",
+  "road_tertiary": "#306230",
+  "road_residential": "#8BAC0F",
+  "road_default": "#306230"
+}
+```
+
+### Example 2: Vaporwave
+
+```json themes/vaporwave.json
+{
+  "name": "Vaporwave",
+  "description": "Retro-futuristic pink and cyan aesthetic",
+  "bg": "#2A0A3F",
+  "text": "#FF71CE",
+  "gradient_color": "#2A0A3F",
+  "water": "#01CDFE",
+  "parks": "#3A1A4F",
+  "road_motorway": "#FF71CE",
+  "road_primary": "#05FFA1",
+  "road_secondary": "#B967FF",
+  "road_tertiary": "#FFFB96",
+  "road_residential": "#4A2A5F",
+  "road_default": "#05FFA1"
+}
+```
+
+### Example 3: Sepia Vintage
+
+```json themes/sepia_vintage.json
+{
+  "name": "Sepia Vintage",
+  "description": "Old photograph sepia tones",
+  "bg": "#F4E8D8",
+  "text": "#5C4A3A",
+  "gradient_color": "#F4E8D8",
+  "water": "#D8C8B0",
+  "parks": "#E8DCC8",
+  "road_motorway": "#5C4A3A",
+  "road_primary": "#7A6858",
+  "road_secondary": "#988878",
+  "road_tertiary": "#B8A898",
+  "road_residential": "#D0C0B0",
+  "road_default": "#988878"
+}
+```
+
+### Example 4: Matrix
+
+```json themes/matrix.json
+{
+  "name": "Matrix",
+  "description": "Green terminal on black - hacker aesthetic",
+  "bg": "#000000",
+  "text": "#00FF41",
+  "gradient_color": "#000000",
+  "water": "#001A0A",
+  "parks": "#002A0F",
+  "road_motorway": "#00FF41",
+  "road_primary": "#00DD38",
+  "road_secondary": "#00BB2F",
+  "road_tertiary": "#009926",
+  "road_residential": "#00771D",
+  "road_default": "#009926"
+}
+```
+
+### Example 5: Lavender Fields
+
+```json themes/lavender.json
+{
+  "name": "Lavender Fields",
+  "description": "Soft purple and lavender tones",
+  "bg": "#F8F5FC",
+  "text": "#6B4F8A",
+  "gradient_color": "#F8F5FC",
+  "water": "#D8CEEA",
+  "parks": "#E8E0F4",
+  "road_motorway": "#6B4F8A",
+  "road_primary": "#8A6FA8",
+  "road_secondary": "#A88FC0",
+  "road_tertiary": "#C0AFD8",
+  "road_residential": "#D8CFEA",
+  "road_default": "#A88FC0"
+}
+```
+
+## Testing Your Theme
+
+### Quick Test
+
+Test with a well-known city:
+
+```bash
+python create_map_poster.py -c "Paris" -C "France" -t my_theme -d 10000
+```
+
+### Test Multiple City Types
+
+Test your theme with different urban patterns:
+
+<CodeGroup>
+```bash Grid City
+# Test with grid pattern (Manhattan)
+python create_map_poster.py -c "New York" -C "USA" -t my_theme -d 12000
+```
+
+```bash Organic City
+# Test with organic pattern (Tokyo)
+python create_map_poster.py -c "Tokyo" -C "Japan" -t my_theme -d 15000
+```
+
+```bash Waterfront City
+# Test with water features (Venice)
+python create_map_poster.py -c "Venice" -C "Italy" -t my_theme -d 4000
+```
+
+```bash Radial City
+# Test with radial pattern (Paris)
+python create_map_poster.py -c "Paris" -C "France" -t my_theme -d 10000
+```
+</CodeGroup>
+
+### Validation Checklist
+
+<Steps>
+  <Step title="Contrast Check">
+    Verify text is readable against background
+  </Step>
+  <Step title="Road Hierarchy">
+    Ensure major roads stand out more than minor roads
+  </Step>
+  <Step title="Water Visibility">
+    Check water features are distinguishable (test Venice or Amsterdam)
+  </Step>
+  <Step title="Park Visibility">
+    Verify parks are visible but subtle (test Paris or London)
+  </Step>
+  <Step title="Dense vs. Sparse">
+    Test with both dense cities (Tokyo) and sparse cities (suburbs)
+  </Step>
+</Steps>
+
+## Advanced Techniques
+
+### Gradient Fade Effect
+
+The `gradient_color` creates a subtle fade at top and bottom of the poster:
+
+```json
+// Same as background = no visible fade
+"bg": "#1A1A1A",
+"gradient_color": "#1A1A1A"
+
+// Different = creates vignette effect
+"bg": "#FFFFFF",
+"gradient_color": "#F0F0F0"  // Slightly darker fade
+```
+
+### Color Temperature
+
+**Warm Themes** (welcoming, vintage):
+- Use reds, oranges, yellows, warm browns
+- Examples: Sunset, Autumn, Terracotta
+
+**Cool Themes** (modern, calm):
+- Use blues, cyans, purples, cool grays
+- Examples: Ocean, Blueprint, Midnight Blue
+
+**Neutral Themes** (professional, versatile):
+- Use grays, beiges, balanced tones
+- Examples: Noir, Warm Beige, Pastel Dream
+
+### Accessibility
+
+Ensure your theme works for colorblind users:
+
+- Use lightness/darkness variation (not just hue)
+- Avoid red/green as the only differentiator
+- Test with colorblind simulators
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Theme not appearing in --list-themes">
+    Ensure:
+    1. File is in `themes/` directory
+    2. File has `.json` extension
+    3. JSON is valid (use a JSON validator)
+    4. All 11 properties are present
+  </Accordion>
+
+  <Accordion title="Invalid JSON error">
+    Common JSON mistakes:
+    
+    ```json
+    // ❌ Trailing comma
+    {
+      "name": "My Theme",
+      "description": "Test",  // <- Remove this comma
+    }
+
+    // ✅ No trailing comma
+    {
+      "name": "My Theme",
+      "description": "Test"
+    }
+
+    // ❌ Comments not allowed
+    {
+      "name": "My Theme",  // This is my theme
+      "description": "Test"
+    }
+
+    // ✅ No comments in JSON
+    {
+      "name": "My Theme",
+      "description": "Test"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Roads not visible">
+    Increase contrast between roads and background:
+    
+    ```json
+    // Before (low contrast)
+    "bg": "#EEEEEE",
+    "road_motorway": "#DDDDDD"  // Too similar
+
+    // After (high contrast)
+    "bg": "#EEEEEE",
+    "road_motorway": "#333333"  // Much darker
+    ```
+  </Accordion>
+
+  <Accordion title="Text not readable">
+    Ensure sufficient contrast:
+
+    ```json
+    // Check contrast at https://webaim.org/resources/contrastchecker/
+    "bg": "#FFFFFF",
+    "text": "#000000"  // High contrast
+
+    // Or use complementary colors
+    "bg": "#1A3A5C",  // Dark blue
+    "text": "#E8F4FF" // Light cyan
+    ```
+  </Accordion>
+
+  <Accordion title="All roads look the same">
+    Increase the gradient range:
+
+    ```json
+    // Before (too similar)
+    "road_motorway": "#3A3A3A",
+    "road_primary": "#404040",
+    "road_residential": "#4A4A4A"
+
+    // After (wider range)
+    "road_motorway": "#000000",
+    "road_primary": "#2A2A2A",
+    "road_residential": "#808080"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Sharing Your Theme
+
+If you create a great theme:
+
+1. Test thoroughly with multiple cities
+2. Choose a descriptive name and write clear description
+3. Consider contributing back to the project
+4. Share screenshots on social media
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Theme Gallery" icon="images" href="/guides/themes">
+    Browse all built-in themes for inspiration
+  </Card>
+  <Card title="Advanced Examples" icon="code" href="/guides/advanced-examples">
+    See advanced usage patterns and techniques
+  </Card>
+</CardGroup>

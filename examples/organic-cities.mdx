@@ -1,0 +1,608 @@
+---
+title: 'Organic Cities'
+description: 'Create posters for historic cities with organic, maze-like street patterns'
+---
+
+## Overview
+
+Organic cities developed over centuries without central planning, creating intricate, maze-like street patterns. These cities produce some of the most visually interesting map posters, with complex networks that tell stories of natural growth and historical layers.
+
+## Asian Organic Cities
+
+### Tokyo - Dense Organic Streets
+
+Tokyo's complex, organically grown street network represents one of the world's most intricate urban fabrics.
+
+<CodeGroup>
+```bash Japanese Ink Theme
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+```
+
+```bash With Japanese Text
+python create_map_poster.py -c "Tokyo" -C "Japan" \
+  -dc "東京" -dC "日本" \
+  --font-family "Noto Sans JP" \
+  -t japanese_ink -d 15000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "Tokyo" -C "Japan" -t noir -d 15000
+python create_map_poster.py -c "Tokyo" -C "Japan" -t contrast_zones -d 15000
+```
+</CodeGroup>
+
+<Accordion title="Why These Settings Work">
+**Distance: 15,000m**
+- Tokyo is massive - needs large radius for impact
+- Shows the organic density of the metro area
+- Captures multiple districts and neighborhoods
+- Displays the complexity of the street network
+
+**Theme: Japanese Ink**
+- Minimalist ink wash style
+- Culturally appropriate aesthetic
+- Perfect for the dense line work
+- Clean, artistic interpretation
+
+**Multilingual Text**
+- Display city as "東京" (Tōkyō) in native script
+- Uses Noto Sans JP for proper Japanese rendering
+- No letter spacing for non-Latin scripts
+</Accordion>
+
+<Note>
+**Tokyo's Unique Pattern**
+
+Tokyo's poster reveals:
+- Extremely dense organic street network
+- No central grid system
+- Streets that evolved from village paths
+- Districts that grew independently and merged
+- The complexity of one of the world's largest cities
+</Note>
+
+### Seoul - Organic Korean Networks
+
+Seoul's organic growth pattern mixed with modern development.
+
+<CodeGroup>
+```bash With Korean Text
+python create_map_poster.py -c "Seoul" -C "South Korea" \
+  -dc "서울" -dC "대한민국" \
+  --font-family "Noto Sans KR" \
+  -t midnight_blue -d 12000
+```
+
+```bash Alternative
+python create_map_poster.py -c "Seoul" -C "South Korea" -t japanese_ink -d 12000
+```
+</CodeGroup>
+
+### Bangkok - Thai Urban Maze
+
+Bangkok's complex network of streets and canals.
+
+<CodeGroup>
+```bash With Thai Text
+python create_map_poster.py -c "Bangkok" -C "Thailand" \
+  -dc "กรุงเทพมหานคร" -dC "ประเทศไทย" \
+  --font-family "Noto Sans Thai" \
+  -t sunset -d 12000
+```
+
+```bash Alternative
+python create_map_poster.py -c "Bangkok" -C "Thailand" -t neon_cyberpunk -d 12000
+```
+</CodeGroup>
+
+## Middle Eastern & North African Organic Cities
+
+### Marrakech - Medina Maze
+
+The intricate maze-like streets of Marrakech's historic medina, a UNESCO World Heritage site.
+
+<CodeGroup>
+```bash Terracotta Theme
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+```
+
+```bash With Arabic Text
+python create_map_poster.py -c "Marrakech" -C "Morocco" \
+  -dc "مراكش" -dC "المغرب" \
+  --font-family "Cairo" \
+  -t terracotta -d 5000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t warm_beige -d 5000
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t sunset -d 5000
+```
+</CodeGroup>
+
+<Accordion title="Configuration Details">
+**Distance: 5,000m**
+- Perfect for the compact medina
+- Shows the maze-like historic quarter
+- Captures the organic medieval layout
+- Includes the souks and traditional neighborhoods
+
+**Theme: Terracotta**
+- Mediterranean and North African warmth
+- Reflects the red clay buildings of Marrakech
+- Warm, earthy tones
+- Culturally appropriate color palette
+
+**Theme: Warm Beige**
+- Vintage, classical aesthetic
+- Complements the ancient medina
+- Desert-inspired tones
+</Accordion>
+
+<Note>
+**Medina Characteristics**
+
+Marrakech's poster beautifully shows:
+- Narrow, winding streets of the medina
+- Dead-end alleys and unexpected passages
+- Dense, organic layout from medieval times
+- The contrast between the medina and modern Ville Nouvelle
+- Traditional Islamic urban planning
+</Note>
+
+### Jerusalem - Ancient Layers
+
+Jerusalem's old city with millennia of organic development.
+
+```bash
+python create_map_poster.py -c "Jerusalem" -C "Israel" -t warm_beige -d 6000
+```
+
+### Cairo - Historic Islamic City
+
+Cairo's historic districts with organic medieval patterns.
+
+<CodeGroup>
+```bash With Arabic Text
+python create_map_poster.py -c "Cairo" -C "Egypt" \
+  -dc "القاهرة" -dC "مصر" \
+  --font-family "Cairo" \
+  -t terracotta -d 12000
+```
+
+```bash Alternative
+python create_map_poster.py -c "Cairo" -C "Egypt" -t warm_beige -d 12000
+```
+</CodeGroup>
+
+## European Organic Cities
+
+### Rome - Ancient Layout
+
+Rome's historic street pattern layered over two millennia.
+
+<CodeGroup>
+```bash Warm Beige Theme
+python create_map_poster.py -c "Rome" -C "Italy" -t warm_beige -d 8000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "Rome" -C "Italy" -t terracotta -d 8000
+python create_map_poster.py -c "Rome" -C "Italy" -t copper_patina -d 8000
+```
+</CodeGroup>
+
+<Accordion title="Why Rome Works at 8,000m">
+**Historic Core Focus**
+- Captures the seven hills
+- Shows the Tiber River curves
+- Includes the historic center and major monuments
+- Displays layers from ancient Rome to modern times
+
+**Theme Selection**
+- `warm_beige`: Classical, timeless aesthetic
+- `terracotta`: Mediterranean warmth, terra cotta roofs
+- `copper_patina`: Ancient, weathered aesthetic
+</Accordion>
+
+<Note>
+**Layers of History**
+
+Rome's poster reveals:
+- Ancient Roman roads still in use
+- Medieval street patterns
+- Renaissance additions
+- Piazzas as organic gathering spaces
+- The Tiber's influence on development
+</Note>
+
+### Paris - Radial Organic Mix
+
+Paris combines organic medieval core with Haussmann's planned radial boulevards.
+
+<CodeGroup>
+```bash Pastel Dream Theme
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 10000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "Paris" -C "France" -t warm_beige -d 10000
+python create_map_poster.py -c "Paris" -C "France" -t copper_patina -d 10000
+```
+</CodeGroup>
+
+<Tip>
+**Paris is Unique**
+
+While Paris has Haussmann's planned boulevards, the underlying street pattern is organic. The poster shows:
+- Medieval organic core (Marais, Latin Quarter)
+- 19th-century radial boulevards overlaid
+- The Seine's natural curves
+- A beautiful mix of planned and organic
+</Tip>
+
+### Istanbul - Layered Civilizations
+
+Istanbul's organic pattern from Greek, Roman, Byzantine, and Ottoman periods.
+
+```bash
+python create_map_poster.py -c "Istanbul" -C "Turkey" -t warm_beige -d 12000
+```
+
+## South Asian Organic Cities
+
+### Mumbai - Organic Peninsula
+
+Mumbai's coastal peninsula with organic growth and density variations.
+
+<CodeGroup>
+```bash Contrast Zones Theme
+python create_map_poster.py -c "Mumbai" -C "India" -t contrast_zones -d 18000
+```
+
+```bash Alternative
+python create_map_poster.py -c "Mumbai" -C "India" -t ocean -d 18000
+```
+</CodeGroup>
+
+<Note>
+**Urban Density Showcase**
+
+Mumbai at 18,000m shows:
+- Extreme density variations
+- Organic street patterns
+- Coastal peninsula geography
+- Island connections and reclaimed land
+- One of the world's most densely populated cities
+</Note>
+
+### Delhi - Old Delhi Organic Core
+
+Old Delhi's organic Mughal-era street pattern.
+
+```bash
+python create_map_poster.py -c "Delhi" -C "India" -t warm_beige -d 12000
+```
+
+## Distance Recommendations for Organic Cities
+
+<CardGroup cols={3}>
+  <Card title="Compact Medinas" icon="building">
+    **5,000-6,000m**
+    
+    Marrakech, Fez, Jerusalem Old City
+    
+    Dense historic centers
+  </Card>
+  
+  <Card title="Historic Cities" icon="landmark">
+    **8,000-12,000m**
+    
+    Rome, Paris, Istanbul, Cairo
+    
+    Balances historic core with surroundings
+  </Card>
+  
+  <Card title="Large Metros" icon="city">
+    **15,000-20,000m**
+    
+    Tokyo, Mumbai
+    
+    Massive organic networks
+  </Card>
+</CardGroup>
+
+## Theme Selection for Organic Cities
+
+### Best Themes for Organic Patterns
+
+<Tabs>
+  <Tab title="Japanese Ink">
+    **Minimalist Artistic**
+    
+    Perfect for dense Asian cities
+    
+    ```bash
+    -t japanese_ink
+    ```
+    
+    **Best for**: Tokyo, Seoul, Kyoto
+    
+    Creates clean, artistic interpretation of complex street networks
+  </Tab>
+  
+  <Tab title="Terracotta">
+    **Mediterranean Warmth**
+    
+    Warm earthy tones for Mediterranean and North African cities
+    
+    ```bash
+    -t terracotta
+    ```
+    
+    **Best for**: Marrakech, Rome, Cairo, Athens
+    
+    Reflects terra cotta roofs and warm climates
+  </Tab>
+  
+  <Tab title="Warm Beige">
+    **Classic Vintage**
+    
+    Timeless aesthetic for historic cities
+    
+    ```bash
+    -t warm_beige
+    ```
+    
+    **Best for**: Rome, Paris, Istanbul, Jerusalem
+    
+    Creates vintage, classical feel for ancient cities
+  </Tab>
+  
+  <Tab title="Contrast Zones">
+    **Urban Density**
+    
+    Shows density variations in organic growth
+    
+    ```bash
+    -t contrast_zones
+    ```
+    
+    **Best for**: Mumbai, Tokyo, dense metros
+    
+    Highlights how different areas developed at different densities
+  </Tab>
+</Tabs>
+
+## Advanced Techniques
+
+### Focusing on Historic Cores
+
+Center on specific historic districts:
+
+<CodeGroup>
+```bash Marrakech - Medina Center
+python create_map_poster.py \
+  --city "Marrakech" --country "Morocco" \
+  -lat 31.6295 -long -7.9811 \
+  -t terracotta -d 4000
+```
+
+```bash Rome - Historic Center
+python create_map_poster.py \
+  --city "Rome" --country "Italy" \
+  -lat 41.9028 -long 12.4964 \
+  -t warm_beige -d 6000
+```
+
+```bash Tokyo - Shibuya District
+python create_map_poster.py \
+  --city "Tokyo" --country "Japan" \
+  -lat 35.6595 -long 139.7004 \
+  -t japanese_ink -d 8000
+```
+</CodeGroup>
+
+### Multilingual Examples for Organic Cities
+
+<CodeGroup>
+```bash Tokyo - Japanese
+python create_map_poster.py -c "Tokyo" -C "Japan" \
+  -dc "東京" -dC "日本" \
+  --font-family "Noto Sans JP" \
+  -t japanese_ink -d 15000
+```
+
+```bash Marrakech - Arabic
+python create_map_poster.py -c "Marrakech" -C "Morocco" \
+  -dc "مراكش" -dC "المغرب" \
+  --font-family "Cairo" \
+  -t terracotta -d 5000
+```
+
+```bash Seoul - Korean
+python create_map_poster.py -c "Seoul" -C "South Korea" \
+  -dc "서울" -dC "대한민국" \
+  --font-family "Noto Sans KR" \
+  -t midnight_blue -d 12000
+```
+
+```bash Bangkok - Thai  
+python create_map_poster.py -c "Bangkok" -C "Thailand" \
+  -dc "กรุงเทพมหานคร" -dC "ประเทศไทย" \
+  --font-family "Noto Sans Thai" \
+  -t sunset -d 12000
+```
+
+```bash Beijing - Chinese
+python create_map_poster.py -c "Beijing" -C "China" \
+  -dc "北京" -dC "中国" \
+  --font-family "Noto Sans SC" \
+  -t japanese_ink -d 15000
+```
+</CodeGroup>
+
+### Print-Ready Organic City Posters
+
+<CodeGroup>
+```bash A4 Print - Tokyo
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -dc "東京" -dC "日本" \
+  --font-family "Noto Sans JP" \
+  -t japanese_ink -d 15000 \
+  -W 8.3 -H 11.7
+```
+
+```bash Large Format - Rome
+python create_map_poster.py \
+  -c "Rome" -C "Italy" \
+  -t warm_beige -d 8000 \
+  -W 16 -H 20
+```
+
+```bash Standard Poster - Marrakech
+python create_map_poster.py \
+  -c "Marrakech" -C "Morocco" \
+  -t terracotta -d 5000 \
+  -W 12 -H 16
+```
+</CodeGroup>
+
+## Comparing Organic Patterns
+
+Create a collection showcasing different types of organic growth:
+
+<Tabs>
+  <Tab title="Asian Organic">
+    **Dense, complex networks**
+    
+    ```bash
+    # Tokyo - Massive organic metro
+    python create_map_poster.py -c "Tokyo" -C "Japan" \
+      -dc "東京" -dC "日本" --font-family "Noto Sans JP" \
+      -t japanese_ink -d 15000
+    
+    # Seoul - Mixed organic and modern
+    python create_map_poster.py -c "Seoul" -C "South Korea" \
+      -dc "서울" -dC "대한민국" --font-family "Noto Sans KR" \
+      -t midnight_blue -d 12000
+    
+    # Bangkok - Canals and organic streets
+    python create_map_poster.py -c "Bangkok" -C "Thailand" \
+      -dc "กรุงเทพมหานคร" -dC "ประเทศไทย" \
+      --font-family "Noto Sans Thai" -t sunset -d 12000
+    ```
+  </Tab>
+  
+  <Tab title="Mediterranean Organic">
+    **Ancient layered patterns**
+    
+    ```bash
+    # Rome - 2000 years of layers
+    python create_map_poster.py -c "Rome" -C "Italy" -t warm_beige -d 8000
+    
+    # Athens - Ancient Greek core
+    python create_map_poster.py -c "Athens" -C "Greece" -t terracotta -d 8000
+    
+    # Istanbul - Multi-civilization layers
+    python create_map_poster.py -c "Istanbul" -C "Turkey" -t warm_beige -d 12000
+    ```
+  </Tab>
+  
+  <Tab title="Islamic Medinas">
+    **Medieval maze patterns**
+    
+    ```bash
+    # Marrakech - Compact medina maze
+    python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+    
+    # Fez - Most complex medina
+    python create_map_poster.py -c "Fez" -C "Morocco" -t terracotta -d 5000
+    
+    # Cairo - Historic Islamic quarter
+    python create_map_poster.py -c "Cairo" -C "Egypt" \
+      -dc "القاهرة" -dC "مصر" --font-family "Cairo" \
+      -t terracotta -d 12000
+    ```
+  </Tab>
+</Tabs>
+
+## Tips for Best Results
+
+<Tip>
+**Embrace the Complexity**
+
+Organic cities are complex - that's their beauty:
+- Don't shy away from dense areas
+- The intricate patterns are the feature, not a bug
+- Themes with good contrast help (japanese_ink, noir, contrast_zones)
+</Tip>
+
+<Tip>
+**Match Theme to Culture**
+
+Use culturally appropriate themes:
+- **Asian cities**: japanese_ink, midnight_blue
+- **Mediterranean**: terracotta, warm_beige, copper_patina  
+- **Middle Eastern**: terracotta, sunset, warm_beige
+- **European historic**: warm_beige, pastel_dream
+</Tip>
+
+<Tip>
+**Use Native Scripts**
+
+For non-Latin script cities, use native language display:
+- Makes the poster more authentic
+- Better gift for locals or travelers
+- Demonstrates cultural respect
+- Automatically handles script-appropriate spacing
+</Tip>
+
+<Tip>
+**Consider Historic Centers**
+
+Many organic cities have distinct historic cores:
+- Use smaller distances (5,000-8,000m) to focus on the medina/old town
+- This captures the most intricate organic patterns
+- Shows the transition from organic to modern
+</Tip>
+
+## Organic Cities Collection
+
+### Generate a Complete Set
+
+Create a gallery showcasing organic city diversity:
+
+```bash
+# Asian Organic
+python create_map_poster.py -c "Tokyo" -C "Japan" -dc "東京" -dC "日本" --font-family "Noto Sans JP" -t japanese_ink -d 15000
+
+# Mediterranean Organic  
+python create_map_poster.py -c "Rome" -C "Italy" -t warm_beige -d 8000
+
+# Islamic Medina
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+
+# European Historic
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 10000
+
+# South Asian Dense
+python create_map_poster.py -c "Mumbai" -C "India" -t contrast_zones -d 18000
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Waterfront Cities" icon="water" href="/examples/waterfront-cities">
+    Coastal cities and canal networks
+  </Card>
+  <Card title="Grid Patterns" icon="grid" href="/examples/grid-patterns">
+    Geometric grid systems
+  </Card>
+  <Card title="Multilingual Guide" icon="language" href="/guides/multilingual">
+    Learn about non-Latin script support
+  </Card>
+  <Card title="Theme Guide" icon="palette" href="/guides/themes">
+    Explore all available themes
+  </Card>
+</CardGroup>

@@ -1,0 +1,126 @@
+---
+title: Introduction
+description: Generate beautiful, minimalist map posters for any city in the world using OpenStreetMap data
+---
+
+MapToPoster is a powerful Python CLI tool that transforms OpenStreetMap data into stunning, print-ready map posters. Create minimalist city map art with customizable themes, multilingual support, and high-resolution output.
+
+<img
+  src="/images/examples/city-posters.png"
+  alt="Example map posters of various cities"
+  width="800"
+/>
+
+## What is MapToPoster?
+
+MapToPoster generates beautiful, minimalist map posters for any city in the world. It fetches street network data from OpenStreetMap using OSMnx, applies artistic themes, and creates high-quality images featuring:
+
+- **Street networks** with hierarchical road styling
+- **Water features** (rivers, bays, coastlines)
+- **Parks and green spaces**
+- **Elegant typography** with city name, country, and coordinates
+- **Custom themes** for different aesthetic styles
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="17 Built-in Themes" icon="palette">
+    From noir minimalism to neon cyberpunk, choose themes that match your aesthetic. Each theme features carefully curated color palettes for backgrounds, roads, water, and parks.
+  </Card>
+  
+  <Card title="Multilingual Support" icon="globe">
+    Display city names in their native scripts (Japanese, Arabic, Thai, Korean, Chinese, etc.) with automatic Google Fonts integration and intelligent script detection.
+  </Card>
+  
+  <Card title="High-Resolution Output" icon="image">
+    Generate posters at 300 DPI in PNG, SVG, or PDF formats. Configurable dimensions up to 20x20 inches for professional printing or digital displays.
+  </Card>
+  
+  <Card title="Smart Caching" icon="bolt">
+    Automatic caching of map data and coordinates reduces API calls and speeds up regeneration with different themes or settings.
+  </Card>
+</CardGroup>
+
+## How It Works
+
+MapToPoster follows a simple pipeline:
+
+1. **Geocoding**: Converts city/country names to coordinates using Nominatim
+2. **Data Fetching**: Downloads street networks, water features, and parks from OpenStreetMap via OSMnx
+3. **Rendering**: Applies theme colors and hierarchical road styling using matplotlib
+4. **Typography**: Adds city name, country, and coordinates with automatic script detection
+5. **Export**: Saves high-resolution poster in your chosen format
+
+<Note>
+  All map data comes from OpenStreetMap contributors and is properly attributed on each poster.
+</Note>
+
+## Popular Use Cases
+
+- **Personal Art**: Create posters of cities you've lived in or visited
+- **Gifts**: Generate custom map art of meaningful locations
+- **Interior Design**: Print minimalist city maps for home or office decor
+- **Digital Wallpapers**: Create 4K wallpapers of your favorite cities
+- **Social Media**: Generate Instagram-ready square format maps
+
+## Architecture Overview
+
+MapToPoster is built with:
+
+- **OSMnx**: Fetches and processes OpenStreetMap data
+- **GeoPandas**: Handles geographic features and projections
+- **Matplotlib**: Renders high-quality poster graphics
+- **geopy**: Geocodes city names to coordinates
+- **Google Fonts API**: Automatic font downloads for multilingual support
+
+```text
+┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
+│   CLI Parser    │────▶│  Geocoding   │────▶│  Data Fetching  │
+│   (argparse)    │     │  (Nominatim) │     │    (OSMnx)      │
+└─────────────────┘     └──────────────┘     └─────────────────┘
+                                                     │
+                        ┌──────────────┐             ▼
+                        │    Output    │◀────┌─────────────────┐
+                        │  (matplotlib)│     │   Rendering     │
+                        └──────────────┘     │  (matplotlib)   │
+                                             └─────────────────┘
+```
+
+## Example Output
+
+<CodeGroup>
+```bash Basic Usage
+# Generate a Paris poster with default terracotta theme
+python create_map_poster.py --city "Paris" --country "France"
+```
+
+```bash Custom Theme
+# Tokyo with Japanese ink theme
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+```
+
+```bash Multilingual
+# Dubai with Arabic text
+python create_map_poster.py -c "Dubai" -C "UAE" \
+  -dc "دبي" -dC "الإمارات" --font-family "Cairo" -t midnight_blue
+```
+</CodeGroup>
+
+## Project Status
+
+- **Version**: 0.2.0
+- **License**: MIT
+- **Python**: Requires Python 3.11+
+- **Platform**: Cross-platform (Linux, macOS, Windows)
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Get MapToPoster installed with uv or pip
+  </Card>
+  
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Create your first poster in minutes
+  </Card>
+</CardGroup>

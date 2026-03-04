@@ -1,0 +1,685 @@
+---
+title: 'Advanced Examples'
+description: 'Advanced usage patterns including coordinate overrides, batch generation, and complex workflows'
+---
+
+Explore advanced techniques for creating specialized map posters, batch processing, and complex workflows.
+
+## Coordinate Override
+
+Override the geocoded center point to focus on specific neighborhoods or landmarks.
+
+### Basic Override
+
+Use `--latitude` and `--longitude` together to specify exact coordinates:
+
+```bash
+python create_map_poster.py \
+  --city "New York" \
+  --country "USA" \
+  -lat 40.776676 \
+  -long -73.971321 \
+  -t noir
+```
+
+<Note>
+You must provide both `--latitude` and `--longitude` together. Providing only one will be ignored.
+</Note>
+
+### Finding Coordinates
+
+<Tabs>
+  <Tab title="Google Maps">
+    1. Right-click on the desired location
+    2. Click the coordinates (e.g., "40.776676, -73.971321")
+    3. Coordinates are copied to clipboard
+  </Tab>
+
+  <Tab title="OpenStreetMap">
+    1. Navigate to desired location
+    2. Right-click → "Show address"
+    3. Coordinates displayed at bottom
+  </Tab>
+
+  <Tab title="Nominatim API">
+    Query the geocoding API directly:
+    
+    ```bash
+    curl "https://nominatim.openstreetmap.org/search?q=Central+Park+New+York&format=json&limit=1"
+    ```
+  </Tab>
+</Tabs>
+
+### Use Cases
+
+<AccordionGroup>
+  <Accordion title="Focus on Specific Neighborhoods">
+    Center on a neighborhood instead of city center:
+
+    ```bash
+    # Manhattan's Upper West Side
+    python create_map_poster.py \
+      -c "New York" -C "USA" \
+      -lat 40.7870 -long -73.9754 \
+      -d 3000 -t noir
+
+    # Tokyo's Shibuya district
+    python create_map_poster.py \
+      -c "Tokyo" -C "Japan" \
+      -lat 35.6595 -long 139.7004 \
+      -d 2000 -t neon_cyberpunk
+
+    # Paris Marais district
+    python create_map_poster.py \
+      -c "Paris" -C "France" \
+      -lat 48.8566 -long 2.3522 \
+      -d 2000 -t pastel_dream
+    ```
+  </Accordion>
+
+  <Accordion title="Feature Specific Landmarks">
+    Center on iconic locations:
+
+    ```bash
+    # Eiffel Tower area
+    python create_map_poster.py \
+      -c "Paris" -C "France" \
+      -lat 48.8584 -long 2.2945 \
+      -d 1500 -t warm_beige
+
+    # Central Park
+    python create_map_poster.py \
+      -c "New York" -C "USA" \
+      -lat 40.7829 -long -73.9654 \
+      -d 2000 -t forest
+
+    # Venice Grand Canal
+    python create_map_poster.py \
+      -c "Venice" -C "Italy" \
+      -lat 45.4371 -long 12.3326 \
+      -d 1000 -t blueprint
+    ```
+  </Accordion>
+
+  <Accordion title="Correct Geocoding Errors">
+    Sometimes Nominatim geocodes to the wrong location:
+
+    ```bash
+    # If "Cambridge" geocodes to UK instead of MA
+    python create_map_poster.py \
+      -c "Cambridge" -C "USA" \
+      -lat 42.3736 -long -71.1097 \
+      -t monochrome_blue
+
+    # If city name is ambiguous
+    python create_map_poster.py \
+      -c "Portland" -C "USA" \
+      -lat 45.5152 -long -122.6784 \  # Oregon, not Maine
+      -t emerald
+    ```
+  </Accordion>
+
+  <Accordion title="Create Neighborhood Series">
+    Generate multiple posters of different neighborhoods:
+
+    ```bash
+    # Brooklyn neighborhoods
+    python create_map_poster.py -c "New York" -C "USA" -lat 40.6782 -long -73.9442 -d 2000 -t noir  # Williamsburg
+    python create_map_poster.py -c "New York" -C "USA" -lat 40.6501 -long -73.9496 -d 2000 -t noir  # Park Slope
+    python create_map_poster.py -c "New York" -C "USA" -lat 40.7282 -long -73.9571 -d 2000 -t noir  # Greenpoint
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Batch Generation
+
+### Generate All Themes
+
+Create 17 posters (one per theme) with a single command:
+
+```bash
+python create_map_poster.py -c "Tokyo" -C "Japan" --all-themes
+```
+
+**Output:**
+```
+posters/tokyo_gradient_roads_20260304_143022.png
+posters/tokyo_contrast_zones_20260304_143045.png
+posters/tokyo_noir_20260304_143108.png
+posters/tokyo_midnight_blue_20260304_143131.png
+...
+```
+
+### Batch Multiple Cities
+
+Use a shell script for batch processing:
+
+<CodeGroup>
+```bash cities.sh
+#!/bin/bash
+
+# Define cities
+CITIES=(
+  "Paris,France"
+  "Tokyo,Japan"
+  "New York,USA"
+  "Barcelona,Spain"
+  "Dubai,UAE"
+)
+
+# Define theme
+THEME="noir"
+
+# Loop through cities
+for city_country in "${CITIES[@]}"; do
+  IFS=',' read -r city country <<< "$city_country"
+  echo "Generating poster for $city, $country..."
+  python create_map_poster.py -c "$city" -C "$country" -t "$THEME"
+done
+
+echo "All posters generated!"
+```
+
+```bash Execute
+chmod +x cities.sh
+./cities.sh
+```
+</CodeGroup>
+
+### Batch with Different Themes
+
+Assign specific themes to specific cities:
+
+```bash batch_themed.sh
+#!/bin/bash
+
+# City + Country + Theme combinations
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+python create_map_poster.py -c "Dubai" -C "UAE" -t midnight_blue -d 15000
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+python create_map_poster.py -c "Singapore" -C "Singapore" -t neon_cyberpunk
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+python create_map_poster.py -c "Seattle" -C "USA" -t emerald -d 12000
+
+echo "Themed collection complete!"
+```
+
+### Parallel Processing
+
+Speed up batch generation with GNU Parallel:
+
+```bash
+# Install GNU Parallel (macOS)
+brew install parallel
+
+# Install GNU Parallel (Linux)
+sudo apt-get install parallel
+
+# Create cities list
+cat > cities.txt << EOF
+Paris,France,pastel_dream
+Tokyo,Japan,japanese_ink
+New York,USA,noir
+Barcelona,Spain,warm_beige
+Dubai,UAE,midnight_blue
+EOF
+
+# Run in parallel (4 jobs at once)
+cat cities.txt | parallel --colsep ',' -j 4 \
+  'python create_map_poster.py -c {1} -C {2} -t {3}'
+```
+
+## Custom Dimensions
+
+### Social Media Formats
+
+<Tabs>
+  <Tab title="Instagram Post">
+    **Square format (1080x1080px)**
+
+    ```bash
+    python create_map_poster.py \
+      -c "Paris" -C "France" \
+      -W 3.6 -H 3.6 \
+      -t pastel_dream
+    ```
+
+    Resolution: 1080x1080px at 300 DPI
+  </Tab>
+
+  <Tab title="Instagram Story">
+    **Vertical format (1080x1920px)**
+
+    ```bash
+    python create_map_poster.py \
+      -c "New York" -C "USA" \
+      -W 3.6 -H 6.4 \
+      -t noir
+    ```
+
+    Resolution: 1080x1920px at 300 DPI
+  </Tab>
+
+  <Tab title="Twitter Header">
+    **Wide format (1500x500px)**
+
+    ```bash
+    python create_map_poster.py \
+      -c "Tokyo" -C "Japan" \
+      -W 5 -H 1.67 \
+      -t neon_cyberpunk
+    ```
+
+    Resolution: 1500x500px at 300 DPI
+  </Tab>
+
+  <Tab title="Facebook Cover">
+    **Ultra-wide format (1640x856px)**
+
+    ```bash
+    python create_map_poster.py \
+      -c "San Francisco" -C "USA" \
+      -W 5.47 -H 2.85 \
+      -t sunset
+    ```
+
+    Resolution: 1640x856px at 300 DPI
+  </Tab>
+</Tabs>
+
+### Desktop Wallpapers
+
+<CodeGroup>
+```bash Full HD (1920x1080)
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -W 6.4 -H 3.6 \
+  -t pastel_dream
+```
+
+```bash 4K (3840x2160)
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -W 12.8 -H 7.2 \
+  -t japanese_ink
+```
+
+```bash Ultrawide (3440x1440)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -W 11.47 -H 4.8 \
+  -t noir
+```
+
+```bash Mobile (1080x1920)
+python create_map_poster.py \
+  -c "Dubai" -C "UAE" \
+  -W 3.6 -H 6.4 \
+  -t midnight_blue
+```
+</CodeGroup>
+
+### Print Formats
+
+<Tabs>
+  <Tab title="A4 (8.3 x 11.7 in)">
+    ```bash
+    python create_map_poster.py \
+      -c "Barcelona" -C "Spain" \
+      -W 8.3 -H 11.7 \
+      -t warm_beige
+    ```
+
+    **Resolution:** 2490x3510px at 300 DPI
+
+    **Use:** Standard document size, home printing
+  </Tab>
+
+  <Tab title="US Letter (8.5 x 11 in)">
+    ```bash
+    python create_map_poster.py \
+      -c "San Francisco" -C "USA" \
+      -W 8.5 -H 11 \
+      -t sunset
+    ```
+
+    **Resolution:** 2550x3300px at 300 DPI
+
+    **Use:** US standard, home printing
+  </Tab>
+
+  <Tab title="A3 (11.7 x 16.5 in)">
+    ```bash
+    python create_map_poster.py \
+      -c "Tokyo" -C "Japan" \
+      -W 11.7 -H 16.5 \
+      -t japanese_ink
+    ```
+
+    **Resolution:** 3510x4950px at 300 DPI
+
+    **Use:** Large prints, professional displays
+  </Tab>
+
+  <Tab title="Poster (18 x 24 in)">
+    ```bash
+    python create_map_poster.py \
+      -c "New York" -C "USA" \
+      -W 18 -H 24 \
+      -t noir
+    ```
+
+    **Resolution:** 5400x7200px at 300 DPI
+
+    **Use:** Large wall posters, galleries
+
+    <Warning>
+      Requires significant memory and processing time. Consider using a smaller distance (`-d`) value.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Complex Workflows
+
+### Multilingual Series
+
+Create posters for the same city in multiple languages:
+
+```bash multilingual_series.sh
+#!/bin/bash
+
+CITY="Tokyo"
+COUNTRY="Japan"
+THEME="japanese_ink"
+
+# English
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -t "$THEME"
+
+# Japanese
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" \
+  -dc "東京" -dC "日本" \
+  --font-family "Noto Sans JP" -t "$THEME"
+
+# Korean
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" \
+  -dc "도쿄" -dC "일본" \
+  --font-family "Noto Sans KR" -t "$THEME"
+
+# Chinese
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" \
+  -dc "东京" -dC "日本" \
+  --font-family "Noto Sans SC" -t "$THEME"
+```
+
+### Distance Comparison
+
+Compare different zoom levels of the same city:
+
+```bash
+# Tight zoom - neighborhood detail
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 3000
+
+# Medium zoom - district view
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 8000
+
+# Wide zoom - full city
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 15000
+```
+
+### Theme Comparison Grid
+
+Generate comparison images for theme selection:
+
+```bash comparison.sh
+#!/bin/bash
+
+CITY="Venice"
+COUNTRY="Italy"
+DISTANCE=4000
+
+# Light themes
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -d $DISTANCE -t warm_beige
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -d $DISTANCE -t pastel_dream
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -d $DISTANCE -t ocean
+
+# Dark themes
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -d $DISTANCE -t noir
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -d $DISTANCE -t midnight_blue
+python create_map_poster.py -c "$CITY" -C "$COUNTRY" -d $DISTANCE -t blueprint
+
+echo "Comparison posters generated! Use image viewer to compare."
+```
+
+## City Pattern Guide
+
+### Grid Cities
+
+**Characteristics:** Regular street grids, right angles, predictable layout
+
+**Best Settings:**
+- Distance: 8000-12000m
+- Themes: Noir, Contrast Zones, Monochrome Blue
+
+```bash
+# Manhattan, USA
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000 -lat 40.7589 -long -73.9851
+
+# Chicago, USA
+python create_map_poster.py -c "Chicago" -C "USA" -t contrast_zones -d 10000
+
+# Barcelona, Spain (Eixample district)
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000 -lat 41.3874 -long 2.1686
+```
+
+### Radial Cities
+
+**Characteristics:** Concentric rings, radiating boulevards
+
+**Best Settings:**
+- Distance: 8000-12000m
+- Themes: Gradient Roads, Pastel Dream
+
+```bash
+# Paris, France
+python create_map_poster.py -c "Paris" -C "France" -t gradient_roads -d 10000
+
+# Moscow, Russia
+python create_map_poster.py -c "Moscow" -C "Russia" -t noir -d 12000
+```
+
+### Organic Cities
+
+**Characteristics:** Irregular streets, historical growth, maze-like
+
+**Best Settings:**
+- Distance: 10000-18000m
+- Themes: Japanese Ink, Warm Beige, Terracotta
+
+```bash
+# Tokyo, Japan
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+
+# Marrakech, Morocco
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+
+# Rome, Italy
+python create_map_poster.py -c "Rome" -C "Italy" -t warm_beige -d 8000
+```
+
+### Waterfront Cities
+
+**Characteristics:** Canals, rivers, coastline, harbors
+
+**Best Settings:**
+- Distance: 4000-12000m
+- Themes: Blueprint, Ocean, Midnight Blue
+
+```bash
+# Venice, Italy
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+
+# Amsterdam, Netherlands
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t ocean -d 6000
+
+# Dubai, UAE
+python create_map_poster.py -c "Dubai" -C "UAE" -t midnight_blue -d 15000
+
+# Sydney, Australia
+python create_map_poster.py -c "Sydney" -C "Australia" -t ocean -d 12000
+```
+
+### Coastal Cities
+
+**Characteristics:** Peninsula, bay, coastal curve
+
+**Best Settings:**
+- Distance: 10000-15000m
+- Themes: Ocean, Sunset, Emerald
+
+```bash
+# San Francisco, USA
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+
+# Mumbai, India
+python create_map_poster.py -c "Mumbai" -C "India" -t contrast_zones -d 18000
+
+# Miami, USA
+python create_map_poster.py -c "Miami" -C "USA" -t ocean -d 12000
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Memory errors with large dimensions">
+    Reduce dimensions or distance:
+
+    ```bash
+    # Instead of this (may crash)
+    python create_map_poster.py -c "Tokyo" -C "Japan" -W 20 -H 20 -d 25000
+
+    # Try this
+    python create_map_poster.py -c "Tokyo" -C "Japan" -W 12 -H 16 -d 15000
+    ```
+
+    Or increase available memory:
+    
+    ```bash
+    # Increase Python memory limit (Linux)
+    ulimit -v unlimited
+    python create_map_poster.py ...
+    ```
+  </Accordion>
+
+  <Accordion title="Slow generation times">
+    Factors affecting speed:
+    - Distance (larger = slower)
+    - City density (Tokyo slower than rural areas)
+    - Dimensions (larger = slower)
+
+    **Speed optimization:**
+    ```bash
+    # Slower (large dense city, wide area)
+    python create_map_poster.py -c "Tokyo" -C "Japan" -d 25000  # ~60s
+
+    # Faster (smaller area)
+    python create_map_poster.py -c "Tokyo" -C "Japan" -d 10000  # ~20s
+
+    # Faster (small city)
+    python create_map_poster.py -c "Venice" -C "Italy" -d 4000  # ~10s
+    ```
+  </Accordion>
+
+  <Accordion title="Coordinates not working as expected">
+    Ensure you're using decimal degrees (not DMS):
+
+    ```bash
+    # ✅ Correct (decimal degrees)
+    -lat 40.7589 -long -73.9851
+
+    # ❌ Incorrect (degrees/minutes/seconds)
+    -lat "40°45'32\"N" -long "73°59'06\"W"
+    ```
+
+    Convert DMS to decimal: `Decimal = Degrees + (Minutes/60) + (Seconds/3600)`
+  </Accordion>
+
+  <Accordion title="Batch script fails on some cities">
+    Add error handling:
+
+    ```bash
+    #!/bin/bash
+    
+    CITIES=("Paris,France" "Tokyo,Japan" "NewYork,USA")
+    
+    for city_country in "${CITIES[@]}"; do
+      IFS=',' read -r city country <<< "$city_country"
+      echo "Processing $city..."
+      
+      # Add timeout and error handling
+      if timeout 120 python create_map_poster.py -c "$city" -C "$country" -t noir; then
+        echo "✓ $city completed"
+      else
+        echo "✗ $city failed"
+      fi
+    done
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Performance Tips
+
+<CardGroup cols={2}>
+  <Card title="Reduce Distance" icon="compress">
+    Use smaller distance values for faster generation:
+    - Small cities: 4000-8000m
+    - Medium cities: 8000-12000m
+    - Large cities: 12000-18000m
+  </Card>
+
+  <Card title="Batch Wisely" icon="layer-group">
+    Generate multiple themes for one city (cached map data) rather than multiple cities:
+    ```bash
+    # Faster (reuses downloaded data)
+    python create_map_poster.py -c "Paris" -C "France" --all-themes
+
+    # Slower (downloads data each time)
+    python create_map_poster.py -c "Paris" -C "France" -t noir
+    python create_map_poster.py -c "Tokyo" -C "Japan" -t noir
+    python create_map_poster.py -c "NYC" -C "USA" -t noir
+    ```
+  </Card>
+
+  <Card title="Use Parallel Processing" icon="server">
+    Leverage GNU Parallel for batch jobs:
+    ```bash
+    cat cities.txt | parallel -j 4 'python create_map_poster.py ...'
+    ```
+  </Card>
+
+  <Card title="Preview Mode" icon="eye">
+    Test with smaller dimensions first:
+    ```bash
+    # Quick preview
+    python create_map_poster.py -c "Paris" -C "France" -W 4 -H 4 -t noir
+
+    # Final high-res
+    python create_map_poster.py -c "Paris" -C "France" -W 12 -H 16 -t noir
+    ```
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Theme Gallery" icon="palette" href="/guides/themes">
+    Explore all 17 built-in themes
+  </Card>
+  <Card title="Create Custom Themes" icon="paintbrush" href="/guides/custom-themes">
+    Design your own theme color palettes
+  </Card>
+  <Card title="Multilingual Support" icon="language" href="/guides/multilingual">
+    Display city names in any language
+  </Card>
+</CardGroup>

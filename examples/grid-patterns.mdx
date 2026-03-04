@@ -1,0 +1,435 @@
+---
+title: 'Grid Pattern Cities'
+description: 'Create posters showcasing iconic grid systems from New York to Barcelona'
+---
+
+## Overview
+
+Cities with grid patterns create some of the most striking and geometric map posters. The regularity and order of grid systems produce clean, minimalist compositions that highlight urban planning excellence.
+
+## Iconic American Grids
+
+### New York - Manhattan Grid
+
+The Manhattan street grid is one of the most recognizable urban patterns in the world, established by the Commissioners' Plan of 1811.
+
+<CodeGroup>
+```bash Recommended - Noir Theme
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+```
+
+```bash With uv
+uv run ./create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+```
+
+```bash Alternative Themes
+python create_map_poster.py -c "New York" -C "USA" -t midnight_blue -d 12000
+python create_map_poster.py -c "New York" -C "USA" -t contrast_zones -d 12000
+```
+</CodeGroup>
+
+<Accordion title="Why These Settings Work">
+**Distance: 12,000m**
+- Captures full Manhattan island from Battery to Inwood
+- Shows the grid's interaction with Broadway's diagonal
+- Includes Central Park as a rectangular void in the grid
+
+**Theme: Noir**
+- Pure black background with white roads
+- Maximum contrast emphasizes geometric precision
+- Modern, minimalist aesthetic matches NYC's character
+
+**Alternative Theme: Contrast Zones**
+- Shows density variations across neighborhoods
+- Highlights differences between avenues and streets
+</Accordion>
+
+<Note>
+**Grid Highlights**
+
+New York's poster beautifully shows:
+- The famous numbered street grid (1st to 220th Streets)
+- Avenues running north-south
+- Broadway's diagonal disruption
+- Central Park's rectangular green space
+- The contrast between gridded Manhattan and organic Brooklyn/Queens
+</Note>
+
+### San Francisco - Peninsula Grid
+
+San Francisco's grid system defies topography, creating the city's famous steep streets.
+
+<CodeGroup>
+```bash Sunset Theme
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+```
+
+```bash Noir Theme
+python create_map_poster.py -c "San Francisco" -C "USA" -t noir -d 10000
+```
+
+```bash Ocean Theme  
+python create_map_poster.py -c "San Francisco" -C "USA" -t ocean -d 10000
+```
+</CodeGroup>
+
+<Tip>
+**Why San Francisco is Unique**
+
+Unlike flat grid cities, San Francisco's grid:
+- Climbs over hills (Russian Hill, Nob Hill, Telegraph Hill)
+- Creates the famous steep streets
+- Shows multiple grid orientations
+- Demonstrates how grids interact with topography
+</Tip>
+
+## European Grid Systems
+
+### Barcelona - Eixample District
+
+Barcelona's Eixample district features one of the world's most distinctive urban grids, designed by Ildefons Cerdà in 1859.
+
+<CodeGroup>
+```bash Warm Beige Theme
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+```
+
+```bash Terracotta Theme
+python create_map_poster.py -c "Barcelona" -C "Spain" -t terracotta -d 8000
+```
+
+```bash Sunset Theme
+python create_map_poster.py -c "Barcelona" -C "Spain" -t sunset -d 8000
+```
+</CodeGroup>
+
+<Accordion title="Barcelona's Unique Grid Features">
+**Octagonal Blocks (Chamfered Corners)**
+- Blocks with chamfered (cut) corners create octagonal intersections
+- Improves visibility and traffic flow
+- Creates unique visual pattern
+- Distinctive spacing between blocks
+
+**Distance: 8,000m**
+- Perfect for the Eixample district
+- Shows the grid's regularity
+- Includes the transition to medieval Gothic Quarter
+
+**Theme: Warm Beige**
+- Mediterranean aesthetic
+- Vintage, classical feel
+- Complements Catalan architecture
+</Accordion>
+
+<Note>
+**What Makes Barcelona Special**
+
+The Eixample grid poster shows:
+- Chamfered octagonal block corners
+- Diagonal Avinguda Diagonal cutting through the grid
+- Gaudí's Sagrada Família within the grid
+- Passeig de Gràcia boulevard
+- Contrast with medieval Gothic Quarter's organic streets
+</Note>
+
+## Other Notable Grid Cities
+
+### Chicago - Lakefront Grid
+
+Chicago's comprehensive grid system along Lake Michigan.
+
+<CodeGroup>
+```bash Recommended
+python create_map_poster.py -c "Chicago" -C "USA" -t noir -d 12000
+```
+
+```bash Alternative
+python create_map_poster.py -c "Chicago" -C "USA" -t midnight_blue -d 12000
+```
+</CodeGroup>
+
+<Tip>
+Chicago's grid extends across the entire city, one of the most comprehensive in the world. The lakefront creates a natural boundary on the east.
+</Tip>
+
+### Toronto - Linear Waterfront Grid
+
+Toronto's grid system along Lake Ontario.
+
+```bash
+python create_map_poster.py -c "Toronto" -C "Canada" -t ocean -d 10000
+```
+
+### Washington DC - L'Enfant Plan
+
+While not a pure grid, Washington DC combines grid and radial patterns.
+
+```bash
+python create_map_poster.py -c "Washington" -C "USA" -t blueprint -d 10000
+```
+
+<Note>
+Washington DC's poster shows the unique combination of:
+- Rectangular grid (numbered and lettered streets)
+- Diagonal avenues (state-named) radiating from circles
+- The Mall's monumental axis
+</Note>
+
+## Distance Recommendations for Grid Cities
+
+<CardGroup cols={3}>
+  <Card title="Focused Grid" icon="square">
+    **8,000-10,000m**
+    
+    Barcelona (Eixample focus)
+    
+    Best for showing specific districts
+  </Card>
+  
+  <Card title="Full City Grid" icon="grid-2">
+    **10,000-12,000m**
+    
+    New York, Chicago, San Francisco
+    
+    Complete urban grid system
+  </Card>
+  
+  <Card title="Metro Grid" icon="grid">
+    **12,000-15,000m**
+    
+    Large cities with extensive grids
+    
+    Shows grid interaction with surroundings
+  </Card>
+</CardGroup>
+
+## Theme Selection for Grid Cities
+
+### Best Themes for Geometric Patterns
+
+<Tabs>
+  <Tab title="Noir">
+    **Maximum Contrast**
+    
+    Pure black background, white roads - emphasizes geometric precision
+    
+    ```bash
+    -t noir
+    ```
+    
+    **Best for**: New York, Chicago
+    
+    **Why it works**: The high contrast makes the grid pattern pop, creating a modern, minimalist aesthetic that emphasizes the city's geometry.
+  </Tab>
+  
+  <Tab title="Warm Beige">
+    **Classic European**
+    
+    Vintage sepia tones for Mediterranean and European cities
+    
+    ```bash
+    -t warm_beige
+    ```
+    
+    **Best for**: Barcelona
+    
+    **Why it works**: The warm tones complement Mediterranean architecture and give a timeless, classical feel.
+  </Tab>
+  
+  <Tab title="Contrast Zones">
+    **Urban Density**
+    
+    Shows density variations across the grid
+    
+    ```bash
+    -t contrast_zones
+    ```
+    
+    **Best for**: New York, Chicago, large metros
+    
+    **Why it works**: Highlights how different areas of the grid have different development densities.
+  </Tab>
+  
+  <Tab title="Midnight Blue">
+    **Elegant Sophistication**
+    
+    Navy background with gold roads
+    
+    ```bash
+    -t midnight_blue
+    ```
+    
+    **Best for**: Any grid city, especially for wall art
+    
+    **Why it works**: The gold-on-navy creates an elegant, sophisticated look perfect for framing.
+  </Tab>
+</Tabs>
+
+## Advanced Grid Techniques
+
+### Centering on Specific Grid Areas
+
+Use custom coordinates to focus on specific parts of the grid:
+
+<CodeGroup>
+```bash Manhattan - Midtown Focus
+python create_map_poster.py \
+  --city "New York" --country "USA" \
+  -lat 40.7580 -long -73.9855 \
+  -t noir -d 8000
+```
+
+```bash Barcelona - Eixample Center
+python create_map_poster.py \
+  --city "Barcelona" --country "Spain" \
+  -lat 41.3948 -long 2.1640 \
+  -t warm_beige -d 6000
+```
+
+```bash Chicago - Downtown Loop
+python create_map_poster.py \
+  --city "Chicago" --country "USA" \
+  -lat 41.8781 -long -87.6298 \
+  -t noir -d 8000
+```
+</CodeGroup>
+
+### Print-Ready Grid Posters
+
+Create high-resolution prints perfect for framing:
+
+<CodeGroup>
+```bash A4 Print (8.3 x 11.7 inches)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -t noir -d 12000 \
+  -W 8.3 -H 11.7
+```
+
+```bash Standard Poster (12 x 16 inches)
+python create_map_poster.py \
+  -c "Barcelona" -C "Spain" \
+  -t warm_beige -d 8000 \
+  -W 12 -H 16
+```
+
+```bash Large Format (16 x 20 inches)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -t noir -d 12000 \
+  -W 16 -H 20
+```
+</CodeGroup>
+
+### Instagram-Ready Grid Maps
+
+```bash
+# Square format (1080 x 1080)
+python create_map_poster.py \
+  -c "Barcelona" -C "Spain" \
+  -t warm_beige -d 8000 \
+  -W 3.6 -H 3.6
+```
+
+## Comparing Grid Systems
+
+Create posters of different grid cities to compare their unique characteristics:
+
+<Tabs>
+  <Tab title="American Grids">
+    **Characteristics**: Large blocks, wide streets, comprehensive coverage
+    
+    ```bash
+    # New York - Dense, uniform grid
+    python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+    
+    # Chicago - Lakefront grid
+    python create_map_poster.py -c "Chicago" -C "USA" -t noir -d 12000
+    
+    # San Francisco - Topographic grid
+    python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+    ```
+  </Tab>
+  
+  <Tab title="European Grids">
+    **Characteristics**: More varied, often mixed with historic centers
+    
+    ```bash
+    # Barcelona - Octagonal blocks
+    python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+    
+    # Turin - Roman grid core
+    python create_map_poster.py -c "Turin" -C "Italy" -t warm_beige -d 8000
+    ```
+  </Tab>
+</Tabs>
+
+## Tips for Best Results
+
+<Tip>
+**Emphasize the Grid**
+
+For cities where the grid is the main feature:
+- Use high-contrast themes (`noir`, `midnight_blue`, `contrast_zones`)
+- Choose distances that show the full extent of the grid
+- Avoid themes that compete with the geometric pattern
+</Tip>
+
+<Tip>
+**Show Grid Disruptions**
+
+Some of the most interesting grid posters show where the pattern breaks:
+- Broadway's diagonal through Manhattan
+- Diagonal Avinguda in Barcelona
+- Radial avenues in Washington DC
+- Water bodies interrupting the grid
+</Tip>
+
+<Tip>
+**Consider Grid Scale**
+
+Different grids have different scales:
+- **Large blocks** (NYC): Use 12,000-15,000m to show extent
+- **Medium blocks** (Barcelona): Use 8,000-10,000m
+- **Fine grids**: May need smaller distances to maintain detail
+</Tip>
+
+## Grid Pattern Showcase
+
+### Generate All Grid Cities
+
+Create a comprehensive collection:
+
+```bash
+# New York
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+
+# Barcelona  
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+
+# Chicago
+python create_map_poster.py -c "Chicago" -C "USA" -t noir -d 12000
+
+# San Francisco
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+
+# Toronto
+python create_map_poster.py -c "Toronto" -C "Canada" -t ocean -d 10000
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Waterfront Cities" icon="water" href="/examples/waterfront-cities">
+    Explore coastal and canal city examples
+  </Card>
+  <Card title="Organic Cities" icon="leaf" href="/examples/organic-cities">
+    Historic cities with organic street patterns
+  </Card>
+  <Card title="Theme Guide" icon="palette" href="/guides/themes">
+    Explore all 17 available themes
+  </Card>
+  <Card title="Advanced Examples" icon="rocket" href="/guides/advanced-examples">
+    Custom coordinates and advanced techniques
+  </Card>
+</CardGroup>

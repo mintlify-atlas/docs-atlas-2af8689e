@@ -1,0 +1,413 @@
+---
+title: 'Theme Gallery'
+description: 'Complete overview of all 17 built-in themes with descriptions, color palettes, and use cases'
+---
+
+MapToPoster includes 17 carefully crafted themes, each designed for specific aesthetics and city types. All themes are stored as JSON files in the `themes/` directory.
+
+## Using Themes
+
+Specify a theme using the `--theme` or `-t` flag:
+
+```bash
+python create_map_poster.py -c "Paris" -C "France" -t noir
+```
+
+<Tip>
+Use `--list-themes` to see all available themes, or `--all-themes` to generate posters for every theme at once.
+</Tip>
+
+## All Themes
+
+### Noir
+
+**Style:** Pure black background with white/gray roads - modern gallery aesthetic
+
+**Best For:** Cities with strong grid patterns (New York, Chicago), modern minimalist prints
+
+**Color Palette:**
+- Background: `#000000` (Black)
+- Text: `#FFFFFF` (White)
+- Water: `#0A0A0A` (Near-black)
+- Parks: `#111111` (Dark gray)
+- Roads: White to dark gray gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+```
+
+---
+
+### Midnight Blue
+
+**Style:** Deep navy background with gold/copper roads - luxury atlas aesthetic
+
+**Best For:** Elegant prints, luxury presentations, cities with waterfront (Dubai, Singapore)
+
+**Color Palette:**
+- Background: `#0A1628` (Deep navy)
+- Text: `#D4AF37` (Gold)
+- Water: `#061020` (Darker navy)
+- Parks: `#0F2235` (Navy gray)
+- Roads: Gold to bronze gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Dubai" -C "UAE" -t midnight_blue -d 15000
+```
+
+---
+
+### Blueprint
+
+**Style:** Classic architectural blueprint - technical drawing aesthetic
+
+**Best For:** Architectural presentations, technical documentation, engineering aesthetics
+
+**Color Palette:**
+- Background: `#1A3A5C` (Blueprint blue)
+- Text: `#E8F4FF` (Light cyan)
+- Water: `#0F2840` (Dark blue)
+- Parks: `#1E4570` (Medium blue)
+- Roads: White to light blue gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+```
+
+---
+
+### Neon Cyberpunk
+
+**Style:** Dark background with electric pink/cyan - bold night city vibes
+
+**Best For:** Modern Asian cities (Tokyo, Singapore, Hong Kong), futuristic aesthetics
+
+**Color Palette:**
+- Background: `#0D0D1A` (Near-black purple)
+- Text: `#00FFFF` (Cyan)
+- Water: `#0A0A15` (Black purple)
+- Parks: `#151525` (Dark purple)
+- Roads: Magenta and cyan neon
+
+**Example:**
+```bash
+python create_map_poster.py -c "Singapore" -C "Singapore" -t neon_cyberpunk
+```
+
+---
+
+### Gradient Roads
+
+**Style:** Smooth gradient from dark center to light edges with subtle features
+
+**Best For:** Highlighting urban density, cities with radial patterns (Paris, Moscow)
+
+**Color Palette:**
+- Background: `#FFFFFF` (White)
+- Text: `#000000` (Black)
+- Water: `#D5D5D5` (Light gray)
+- Parks: `#EFEFEF` (Very light gray)
+- Roads: Black center to gray edges
+
+**Example:**
+```bash
+python create_map_poster.py -c "Paris" -C "France" -t gradient_roads -d 10000
+```
+
+---
+
+### Contrast Zones
+
+**Style:** Strong contrast showing urban density - darker in center, lighter at edges
+
+**Best For:** Large metropolitan areas, showing density patterns (Mumbai, Tokyo, Mumbai)
+
+**Color Palette:**
+- Background: `#FFFFFF` (White)
+- Text: `#000000` (Black)
+- Water: `#B0B0B0` (Gray)
+- Parks: `#ECECEC` (Light gray)
+- Roads: Pure black to gray gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Mumbai" -C "India" -t contrast_zones -d 18000
+```
+
+---
+
+### Warm Beige
+
+**Style:** Earthy warm neutrals with sepia tones - vintage map aesthetic
+
+**Best For:** Historic European cities (Rome, Barcelona), vintage prints
+
+**Color Palette:**
+- Background: `#F5F0E8` (Warm cream)
+- Text: `#6B5B4F` (Brown)
+- Water: `#DDD5C8` (Beige)
+- Parks: `#E8E4D8` (Light beige)
+- Roads: Brown to light tan gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+```
+
+---
+
+### Pastel Dream
+
+**Style:** Soft muted pastels with dusty blues and mauves - dreamy artistic aesthetic
+
+**Best For:** Artistic prints, soft aesthetics, cities with parks (Paris, London)
+
+**Color Palette:**
+- Background: `#FAF7F2` (Off-white)
+- Text: `#5D5A6D` (Dusty purple)
+- Water: `#D4E4ED` (Light blue)
+- Parks: `#E8EDE4` (Pale green)
+- Roads: Dusty blue to lavender gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 10000
+```
+
+---
+
+### Japanese Ink
+
+**Style:** Traditional ink wash inspired - minimalist with subtle red accent
+
+**Best For:** Japanese cities, minimalist aesthetics, traditional art enthusiasts
+
+**Color Palette:**
+- Background: `#FAF8F5` (Warm white)
+- Text: `#2C2C2C` (Charcoal)
+- Water: `#E8E4E0` (Pale gray)
+- Parks: `#F0EDE8` (Light gray)
+- Roads: Dark red motorways with gray streets
+
+**Example:**
+```bash
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+```
+
+---
+
+### Emerald
+
+**Style:** Lush dark green aesthetic with mint accents
+
+**Best For:** Green cities (Seattle, Portland, Vancouver), nature-focused aesthetics
+
+**Color Palette:**
+- Background: `#062C22` (Deep green)
+- Text: `#E3F9F1` (Mint)
+- Water: `#0D4536` (Forest green)
+- Parks: `#0F523E` (Dark green)
+- Roads: Bright mint to forest green gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Seattle" -C "USA" -t emerald -d 12000
+```
+
+---
+
+### Forest
+
+**Style:** Deep greens and sage tones - organic botanical aesthetic
+
+**Best For:** Cities with abundant parks, botanical themes, eco-conscious prints
+
+**Color Palette:**
+- Background: `#F0F4F0` (Light sage)
+- Text: `#2D4A3E` (Forest green)
+- Water: `#B8D4D4` (Teal)
+- Parks: `#D4E8D4` (Light green)
+- Roads: Dark to light green gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Melbourne" -C "Australia" -t forest
+```
+
+---
+
+### Ocean
+
+**Style:** Various blues and teals - perfect for coastal cities
+
+**Best For:** Coastal cities (Sydney, San Francisco, Miami), waterfront locations
+
+**Color Palette:**
+- Background: `#F0F8FA` (Light cyan)
+- Text: `#1A5F7A` (Ocean blue)
+- Water: `#B8D8E8` (Light blue)
+- Parks: `#D8EAE8` (Pale cyan)
+- Roads: Deep to light blue gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Sydney" -C "Australia" -t ocean -d 12000
+```
+
+---
+
+### Terracotta
+
+**Style:** Mediterranean warmth - burnt orange and clay tones on cream
+
+**Best For:** Mediterranean cities (Marrakech, Barcelona, Rome), warm climates
+
+**Color Palette:**
+- Background: `#F5EDE4` (Cream)
+- Text: `#8B4513` (Saddle brown)
+- Water: `#A8C4C4` (Muted teal)
+- Parks: `#E8E0D0` (Beige)
+- Roads: Burnt orange to light tan gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+```
+
+---
+
+### Sunset
+
+**Style:** Warm oranges and pinks on soft peach - dreamy golden hour aesthetic
+
+**Best For:** Romantic prints, warm aesthetics, California cities
+
+**Color Palette:**
+- Background: `#FDF5F0` (Soft peach)
+- Text: `#C45C3E` (Coral)
+- Water: `#F0D8D0` (Light pink)
+- Parks: `#F8E8E0` (Pale peach)
+- Roads: Coral to light pink gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+```
+
+---
+
+### Autumn
+
+**Style:** Burnt oranges, deep reds, golden yellows - seasonal warmth
+
+**Best For:** Fall-themed prints, warm aesthetics, New England cities
+
+**Color Palette:**
+- Background: `#FBF7F0` (Cream white)
+- Text: `#8B4513` (Saddle brown)
+- Water: `#D8CFC0` (Tan)
+- Parks: `#E8E0D0` (Beige)
+- Roads: Dark red to golden gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Boston" -C "USA" -t autumn -d 10000
+```
+
+---
+
+### Copper Patina
+
+**Style:** Oxidized copper aesthetic - teal-green patina with copper accents
+
+**Best For:** Unique artistic prints, cities with copper architecture, industrial aesthetics
+
+**Color Palette:**
+- Background: `#E8F0F0` (Light cyan)
+- Text: `#2A5A5A` (Teal)
+- Water: `#C0D8D8` (Light teal)
+- Parks: `#D8E8E0` (Pale green)
+- Roads: Copper primary with teal secondaries
+
+**Example:**
+```bash
+python create_map_poster.py -c "Budapest" -C "Hungary" -t copper_patina -d 8000
+```
+
+---
+
+### Monochrome Blue
+
+**Style:** Single blue color family with varying saturation - clean and cohesive
+
+**Best For:** Professional presentations, corporate aesthetics, minimalist prints
+
+**Color Palette:**
+- Background: `#F5F8FA` (Very light blue)
+- Text: `#1A3A5C` (Dark blue)
+- Water: `#D0E0F0` (Light blue)
+- Parks: `#E0EAF2` (Pale blue)
+- Roads: Dark to light blue monochrome gradient
+
+**Example:**
+```bash
+python create_map_poster.py -c "Boston" -C "USA" -t monochrome_blue -d 10000
+```
+
+---
+
+## Theme Comparison Table
+
+| Theme | Background | Mood | Best For |
+|-------|-----------|------|----------|
+| Noir | Dark | Modern, Minimalist | Grid cities, galleries |
+| Midnight Blue | Dark | Luxury, Elegant | Waterfront cities, luxury prints |
+| Blueprint | Medium | Technical, Architectural | Any city, professional use |
+| Neon Cyberpunk | Dark | Bold, Futuristic | Asian cities, modern aesthetics |
+| Gradient Roads | Light | Density Focus | Radial patterns, urban density |
+| Contrast Zones | Light | High Contrast | Large metros, density patterns |
+| Warm Beige | Light | Vintage, Classic | Historic European cities |
+| Pastel Dream | Light | Soft, Dreamy | Artistic prints, parks |
+| Japanese Ink | Light | Minimalist, Traditional | Japanese cities, minimalist |
+| Emerald | Dark | Lush, Natural | Green cities, nature focus |
+| Forest | Light | Organic, Botanical | Cities with parks, eco themes |
+| Ocean | Light | Coastal, Fresh | Coastal cities, waterfront |
+| Terracotta | Light | Warm, Mediterranean | Mediterranean cities, warm climates |
+| Sunset | Light | Romantic, Warm | California cities, romantic |
+| Autumn | Light | Seasonal, Cozy | Fall themes, New England |
+| Copper Patina | Light | Unique, Industrial | Artistic prints, unique aesthetics |
+| Monochrome Blue | Light | Professional, Clean | Corporate, professional use |
+
+## Generate All Themes
+
+Create posters in all 17 themes with a single command:
+
+```bash
+python create_map_poster.py -c "Tokyo" -C "Japan" --all-themes
+```
+
+This generates 17 files:
+```
+posters/tokyo_noir_20260304_143022.png
+posters/tokyo_midnight_blue_20260304_143045.png
+posters/tokyo_blueprint_20260304_143108.png
+...
+```
+
+<Note>
+Each poster takes 10-30 seconds to generate depending on city size and distance parameter.
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Custom Themes" icon="palette" href="/guides/custom-themes">
+    Learn how to create your own theme JSON files
+  </Card>
+  <Card title="Advanced Examples" icon="code" href="/guides/advanced-examples">
+    Explore advanced usage patterns and techniques
+  </Card>
+</CardGroup>

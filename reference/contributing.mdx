@@ -1,0 +1,651 @@
+---
+title: 'Contributing Guidelines'
+description: 'How to contribute to MapToPoster - development setup, testing, and contribution workflow'
+---
+
+## Welcome Contributors
+
+Thank you for your interest in contributing to MapToPoster! This guide will help you set up your development environment and understand the contribution workflow.
+
+<Note>
+  MapToPoster is a CLI-focused project. We welcome bug fixes and feature enhancements that align with the project's minimalist design philosophy.
+</Note>
+
+---
+
+## Contribution Philosophy
+
+Before starting work, please review these guidelines:
+
+### ✅ We Welcome
+
+- **Bug fixes** for rendering issues, crashes, or incorrect output
+- **Performance improvements** for data fetching or rendering speed
+- **New themes** with well-designed color palettes
+- **Documentation improvements** for clarity and completeness
+- **New map layers** (railways, buildings, etc.) that enhance poster quality
+- **Internationalization** improvements for better font/script support
+- **Test coverage** additions and improvements
+
+### ❌ Please Don't Submit
+
+- **User interfaces** (web apps, desktop GUIs, mobile apps)
+  - MapToPoster is intentionally CLI-only to maintain simplicity
+- **Dockerization** for now
+  - May be considered in the future, but not a current priority
+- **Major architectural rewrites** without prior discussion
+  - Please open an issue or discussion first
+
+<Warning>
+  **Before working on large features**, please ask in [GitHub Discussions](https://github.com/originalankur/maptoposter/discussions) or open an issue to confirm it will be merged. This saves everyone's time!
+</Warning>
+
+---
+
+## Development Setup
+
+### Prerequisites
+
+- Python 3.11 or higher ([required since v0.3.0](https://github.com/originalankur/maptoposter/blob/main/CHANGELOG.md))
+- Git for version control
+- Text editor or IDE (VS Code, PyCharm, etc.)
+
+### Installation Methods
+
+<Accordion title="Option 1: Using uv (Recommended)">
+  [uv](https://docs.astral.sh/uv/) is the recommended package manager for MapToPoster. It provides faster dependency resolution and automatic virtual environment management.
+  
+  **Install uv:**
+  ```bash
+  # macOS/Linux
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  
+  # Windows
+  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+  
+  **Clone and setup:**
+  ```bash
+  git clone https://github.com/originalankur/maptoposter.git
+  cd maptoposter
+  
+  # Sync dependencies (creates .venv automatically)
+  uv sync --locked
+  
+  # Run the script
+  uv run ./create_map_poster.py --city Paris --country France
+  ```
+  
+  The `--locked` flag ensures you get exact dependency versions from `uv.lock` for reproducible builds.
+</Accordion>
+
+<Accordion title="Option 2: Using pip + venv">
+  Traditional Python virtual environment setup:
+  
+  ```bash
+  git clone https://github.com/originalankur/maptoposter.git
+  cd maptoposter
+  
+  # Create virtual environment
+  python -m venv .venv
+  
+  # Activate environment
+  source .venv/bin/activate  # macOS/Linux
+  .venv\Scripts\activate     # Windows
+  
+  # Install dependencies
+  pip install -r requirements.txt
+  
+  # Run the script
+  python create_map_poster.py --city Paris --country France
+  ```
+</Accordion>
+
+### Verify Installation
+
+Test that everything is working:
+
+```bash
+# List available themes
+python create_map_poster.py --list-themes
+
+# Generate a test poster
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+```
+
+You should see:
+1. Progress bars for data fetching
+2. Theme loading confirmation
+3. A new PNG file in `posters/` directory
+
+---
+
+## Project Structure
+
+Understanding the codebase layout:
+
+```text
+maptoposter/
+├── create_map_poster.py    # Main CLI script and rendering logic
+├── font_management.py      # Font loading and Google Fonts integration
+├── themes/                 # Theme JSON files (17 built-in themes)
+│   ├── terracotta.json
+│   ├── noir.json
+│   ├── japanese_ink.json
+│   └── ...
+├── fonts/                  # Font files
+│   ├── Roboto-Bold.ttf
+│   ├── Roboto-Regular.ttf
+│   ├── Roboto-Light.ttf
+│   └── cache/              # Downloaded Google Fonts (auto-generated)
+├── posters/                # Generated output (git-ignored)
+├── cache/                  # OSM data cache (git-ignored)
+├── pyproject.toml          # Project metadata and dependencies
+├── uv.lock                 # Locked dependency versions
+├── requirements.txt        # pip-compatible dependencies
+├── README.md               # User documentation
+└── CHANGELOG.md            # Version history
+```
+
+### Key Files to Know
+
+| File | Lines | Purpose |
+|------|-------|----------|
+| `create_map_poster.py` | ~1052 | Main entry point, CLI parsing, rendering pipeline |
+| `font_management.py` | ~171 | Font loading, Google Fonts API integration |
+| `themes/*.json` | ~15 each | Color palette definitions |
+| `pyproject.toml` | ~30 | Python 3.11+ requirement, dependency list |
+
+---
+
+## Making Changes
+
+### Development Workflow
+
+<Steps>
+  <Step title="Create a feature branch">
+    ```bash
+    git checkout -b fix/road-rendering-bug
+    # or
+    git checkout -b feature/add-railways
+    ```
+    
+    Use clear branch names: `fix/`, `feature/`, `docs/`, `test/`
+  </Step>
+  
+  <Step title="Make your changes">
+    Edit the relevant files. See [Architecture Overview](/reference/architecture) for code structure.
+    
+    **For bug fixes:**
+    - Identify the problematic function(s)
+    - Add print statements or use a debugger to trace the issue
+    - Fix the root cause, not just the symptom
+    
+    **For new features:**
+    - Follow existing code patterns (see [Extension Points](/reference/architecture#extension-points))
+    - Add necessary theme properties to ALL theme JSON files
+    - Update fallback values in `load_theme()` function
+  </Step>
+  
+  <Step title="Test your changes">
+    **CRITICAL**: Test before and after versions!
+    
+    ```bash
+    # Generate test poster BEFORE your changes
+    git stash
+    python create_map_poster.py -c "Tokyo" -C "Japan" -t noir -d 15000
+    mv posters/tokyo_noir_*.png before.png
+    git stash pop
+    
+    # Generate test poster AFTER your changes
+    python create_map_poster.py -c "Tokyo" -C "Japan" -t noir -d 15000
+    mv posters/tokyo_noir_*.png after.png
+    
+    # Compare visually
+    open before.png after.png  # macOS
+    ```
+    
+    **Test multiple scenarios:**
+    - Different cities (grid vs organic layouts)
+    - Different themes (light vs dark backgrounds)
+    - Different distances (small 4000m vs large 18000m)
+    - Edge cases (coastal cities, islands, etc.)
+  </Step>
+  
+  <Step title="Commit your changes">
+    ```bash
+    git add create_map_poster.py
+    git commit -m "fix: correct road layer z-order to render above water"
+    ```
+    
+    Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+    - `fix:` for bug fixes
+    - `feat:` for new features
+    - `docs:` for documentation changes
+    - `test:` for test additions
+    - `refactor:` for code refactoring
+  </Step>
+  
+  <Step title="Push and create PR">
+    ```bash
+    git push origin fix/road-rendering-bug
+    ```
+    
+    Then open a Pull Request on GitHub with:
+    - Clear description of the problem/feature
+    - Before/after screenshots for visual changes
+    - Testing steps you performed
+    - Any breaking changes or migration notes
+  </Step>
+</Steps>
+
+---
+
+## Testing Guidelines
+
+### Manual Testing Checklist
+
+Before submitting a PR, test these scenarios:
+
+<Accordion title="Core Functionality">
+  - [ ] Basic poster generation works
+  - [ ] Geocoding resolves city/country correctly
+  - [ ] Cache is created and reused on second run
+  - [ ] Theme loading works for all built-in themes
+  - [ ] Error handling doesn't crash the script
+</Accordion>
+
+<Accordion title="Visual Quality">
+  - [ ] Roads render above water and parks (z-order bug fixed in [PR #42](https://github.com/originalankur/maptoposter/pull/42))
+  - [ ] Text is readable and properly positioned
+  - [ ] Gradients blend smoothly at top/bottom
+  - [ ] Aspect ratio is maintained (no distortion)
+  - [ ] Line weights are consistent across zoom levels
+</Accordion>
+
+<Accordion title="Edge Cases">
+  - [ ] Long city names don't get cut off
+  - [ ] Non-Latin scripts render correctly (test with Japanese/Arabic)
+  - [ ] Custom coordinates override works
+  - [ ] Invalid city/country shows helpful error
+  - [ ] Network failures are handled gracefully
+</Accordion>
+
+<Accordion title="Cross-Platform">
+  If possible, test on multiple platforms:
+  - [ ] macOS
+  - [ ] Linux
+  - [ ] Windows
+  
+  Focus on file path handling and font loading.
+</Accordion>
+
+### Test Coverage Areas
+
+We don't have formal unit tests yet (contributions welcome!), but manual testing should cover:
+
+1. **Data Fetching**: Verify OSMnx queries return expected data
+2. **Rendering**: Check layer composition and z-order
+3. **Typography**: Test Latin and non-Latin scripts
+4. **Themes**: Load all 17 themes successfully
+5. **Caching**: Confirm cache files are created and reused
+6. **CLI Arguments**: Test all flag combinations
+
+---
+
+## Code Style Guidelines
+
+### Python Conventions
+
+- **Formatting**: Follow PEP 8 style guide
+- **Line length**: Max 120 characters (existing code uses ~100)
+- **Docstrings**: Use triple-quoted strings with clear descriptions
+- **Type hints**: Use when possible (see `fetch_graph()` return type at line 409)
+- **Naming**:
+  - Functions: `snake_case` (e.g., `get_edge_colors_by_type`)
+  - Classes: `PascalCase` (e.g., `CacheError`)
+  - Constants: `UPPER_CASE` (e.g., `FONTS_DIR`, `THEME`)
+
+### Example Function
+
+```python
+def fetch_features(point, dist, tags, name) -> GeoDataFrame | None:
+    """
+    Fetch geographic features from OpenStreetMap.
+    
+    Uses caching to avoid redundant downloads. Fetches features matching
+    the specified OSM tags within distance from center point.
+    
+    Args:
+        point: (latitude, longitude) tuple for center point
+        dist: Distance in meters from center point
+        tags: Dictionary of OSM tags to filter features
+        name: Name for this feature type (for caching and logging)
+    
+    Returns:
+        GeoDataFrame of features, or None if fetch fails
+    """
+    # Implementation...
+```
+
+### Comments
+
+- Use comments to explain **why**, not **what**
+- Complex algorithms should have explanatory comments
+- Reference issue numbers when fixing bugs:
+  ```python
+  # Fix z-order bug (issue #39) - roads should render above water
+  water_polys.plot(ax=ax, facecolor=THEME['water'], zorder=0.5)
+  ```
+
+---
+
+## Adding New Themes
+
+Themes are the easiest way to contribute!
+
+### Creating a Theme
+
+<Steps>
+  <Step title="Design your color palette">
+    Choose colors that work well together. Use tools like:
+    - [Coolors.co](https://coolors.co/) for palette generation
+    - [Adobe Color](https://color.adobe.com/) for harmony rules
+    - [Paletton](https://paletton.com/) for color relationships
+    
+    **Consider:**
+    - Background should contrast with roads
+    - Water should be distinguishable from background
+    - Road hierarchy should be visible (motorway darkest/lightest)
+    - Text must be readable against background
+  </Step>
+  
+  <Step title="Create JSON file">
+    ```json themes/my_theme.json
+    {
+      "name": "My Awesome Theme",
+      "description": "Brief description of the aesthetic",
+      "bg": "#FFFFFF",
+      "text": "#000000",
+      "gradient_color": "#FFFFFF",
+      "water": "#A8D5E2",
+      "parks": "#C8E6C9",
+      "road_motorway": "#1A1A1A",
+      "road_primary": "#2A2A2A",
+      "road_secondary": "#3A3A3A",
+      "road_tertiary": "#4A4A4A",
+      "road_residential": "#5A5A5A",
+      "road_default": "#4A4A4A"
+    }
+    ```
+    
+    **All fields are required.** The theme won't load if any are missing.
+  </Step>
+  
+  <Step title="Test the theme">
+    ```bash
+    python create_map_poster.py -c "Barcelona" -C "Spain" -t my_theme -d 8000
+    python create_map_poster.py -c "Venice" -C "Italy" -t my_theme -d 4000
+    python create_map_poster.py -c "Tokyo" -C "Japan" -t my_theme -d 15000
+    ```
+    
+    Test on cities with different characteristics:
+    - **Grid layouts** (Barcelona, New York) - tests road hierarchy
+    - **Water-heavy** (Venice, Amsterdam) - tests water/road contrast
+    - **Organic streets** (Tokyo, Marrakech) - tests density rendering
+  </Step>
+  
+  <Step title="Submit PR with examples">
+    Include sample posters in your PR description:
+    ```markdown
+    ## New Theme: My Awesome Theme
+    
+    A vibrant theme inspired by [inspiration source].
+    
+    **Sample Posters:**
+    - Barcelona (grid test): [attach image]
+    - Venice (water test): [attach image]
+    - Tokyo (density test): [attach image]
+    ```
+  </Step>
+</Steps>
+
+### Theme Design Tips
+
+<Note>
+  **Road hierarchy matters!** The difference between motorway and residential should be visually clear but not jarring. Aim for 15-20% brightness difference between adjacent levels.
+</Note>
+
+**Common mistakes to avoid:**
+- Background and gradient color mismatch (causes visible seam)
+- Insufficient text contrast (hard to read city name)
+- Water too similar to background (loses definition)
+- All roads same color (loses street hierarchy)
+
+---
+
+## Bug Fixes
+
+### Reporting Bugs
+
+Before fixing a bug, check if it's already reported in [GitHub Issues](https://github.com/originalankur/maptoposter/issues).
+
+**Good bug reports include:**
+- MapToPoster version (check recent commits or tags)
+- Python version (`python --version`)
+- Operating system (macOS, Linux, Windows)
+- Full command you ran
+- Expected vs actual behavior
+- Error messages or stack traces
+- Sample poster showing the issue (if visual)
+
+### Example Bug Fix PR
+
+See [PR #42](https://github.com/originalankur/maptoposter/pull/42) for the road z-order fix:
+
+**Problem**: Roads were rendering below water/parks (issue [#39](https://github.com/originalankur/maptoposter/issues/39))
+
+**Solution**: Adjusted z-order values:
+```python
+# Before
+water_polys.plot(..., zorder=1)
+parks_polys.plot(..., zorder=2)
+# Roads at default zorder=2 (matplotlib)
+
+# After  
+water_polys.plot(..., zorder=0.5)
+parks_polys.plot(..., zorder=0.8)
+# Roads remain at zorder=2 (now above other layers)
+```
+
+**Testing**: Generated before/after posters for Venice (water-heavy) and Barcelona (road-heavy)
+
+---
+
+## Common Development Tasks
+
+### Adding a New Map Layer
+
+Example: Adding railway lines to posters
+
+```python create_map_poster.py (after line 558)
+# 4. Fetch Railways
+pbar.set_description("Downloading railway network")
+railways = fetch_features(
+    point,
+    compensated_dist,
+    tags={"railway": "rail"},
+    name="railways",
+)
+pbar.update(1)  # Increment progress bar
+```
+
+Then render it (before roads, around line 594):
+
+```python
+if railways is not None and not railways.empty:
+    railways_lines = railways[railways.geometry.type.isin(["LineString", "MultiLineString"])]
+    if not railways_lines.empty:
+        railways_lines = railways_lines.to_crs(g_proj.graph['crs'])
+        railways_lines.plot(ax=ax, color=THEME['railway'], linewidth=0.6, zorder=1.5)
+```
+
+**Don't forget:**
+1. Add `"railway": "#...",` to ALL theme JSON files (17 files)
+2. Update `load_theme()` fallback dict at line 186
+3. Update total in `tqdm` (line 526): `total=4` instead of `total=3`
+4. Test with cities that have railways (Tokyo, Paris, London)
+
+### Modifying Road Styling
+
+To change how roads are colored/sized:
+
+1. **Color changes**: Edit `get_edge_colors_by_type()` at line 255
+2. **Width changes**: Edit `get_edge_widths_by_type()` at line 289
+3. **New road types**: Add cases to both functions
+
+Example - make motorways thicker:
+
+```python
+def get_edge_widths_by_type(g):
+    # ...
+    if highway in ["motorway", "motorway_link"]:
+        width = 1.5  # Changed from 1.2
+```
+
+### Adjusting Typography
+
+Text positioning uses normalized coordinates (0-1 range):
+
+```python
+# City name at 14% from bottom
+ax.text(0.5, 0.14, city_name, ...)
+
+# Country at 10% from bottom  
+ax.text(0.5, 0.10, country_name, ...)
+
+# Coordinates at 7% from bottom
+ax.text(0.5, 0.07, coords, ...)
+```
+
+To move labels higher/lower, adjust the `y` values (second argument).
+
+**Font sizes** scale with poster dimensions (see `create_map_poster.py:618-681`):
+
+```python
+scale_factor = min(height, width) / 12.0
+base_main = 60
+adjusted_size = base_main * scale_factor
+```
+
+To make text bigger, increase `base_main`, `base_sub`, etc.
+
+---
+
+## Performance Optimization
+
+If you're working on performance improvements:
+
+### Profiling
+
+```python
+import cProfile
+import pstats
+
+# Add to create_poster() function:
+def create_poster(...):
+    profiler = cProfile.Profile()
+    profiler.enable()
+    
+    # ... existing code ...
+    
+    profiler.disable()
+    stats = pstats.Stats(profiler)
+    stats.sort_stats('cumtime')
+    stats.print_stats(20)  # Top 20 slowest functions
+```
+
+### Common Bottlenecks
+
+1. **OSM data fetching**: Already cached, but initial fetch is slow
+   - Solution: No way around this, OSM API is the bottleneck
+   - Use smallest effective distance
+
+2. **Graph projection**: `ox.project_graph()` can be slow for large graphs
+   - Solution: Already optimized, but could cache projected graphs
+
+3. **Matplotlib rendering**: `plt.savefig()` at high DPI
+   - Solution: Use lower DPI for previews, 300 DPI for final
+
+### Memory Usage
+
+For very large cities (dist > 25km), memory usage can spike:
+
+```python
+import tracemalloc
+
+# At start of create_poster()
+tracemalloc.start()
+
+# At end
+current, peak = tracemalloc.get_traced_memory()
+print(f"Current: {current / 10**6:.1f}MB, Peak: {peak / 10**6:.1f}MB")
+tracemalloc.stop()
+```
+
+---
+
+## Getting Help
+
+Stuck on something? Here's where to ask:
+
+- **GitHub Discussions**: Best for questions about contributing, architecture, or design decisions
+- **GitHub Issues**: For bugs you've found (check existing issues first)
+- **Code Comments**: Read inline comments in `create_map_poster.py` - they explain complex logic
+- **This Documentation**: [Architecture Overview](/reference/architecture) has detailed technical info
+
+---
+
+## Changelog & Version History
+
+When your PR is merged, it will be added to `CHANGELOG.md`. See [Keep a Changelog](https://keepachangelog.com/) format.
+
+**Recent significant changes:**
+
+- **v0.3.0** (2026-01-27): Custom coordinates, emerald theme, default theme changed to terracotta
+- **v0.2.1** (2026-01-18): SVG/PDF export, variable dimensions, caching improvements
+- **v0.1.0** (2026-01-17): Initial release with 17 themes
+
+**Community contributions** (unreleased):
+- uv package manager support ([PR #20](https://github.com/originalankur/maptoposter/pull/20))
+- Z-order bug fix ([PR #42](https://github.com/originalankur/maptoposter/pull/42), fixes [#39](https://github.com/originalankur/maptoposter/issues/39))
+- Text scaling for landscape orientations ([#112](https://github.com/originalankur/maptoposter/issues/112))
+
+See full history in [CHANGELOG.md](https://github.com/originalankur/maptoposter/blob/main/CHANGELOG.md).
+
+---
+
+## License & Attribution
+
+MapToPoster uses data from [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
+
+All posters must include the OSM attribution (automatically added at bottom-right):
+```
+© OpenStreetMap contributors
+```
+
+When contributing code, you agree to license it under the same terms as the project.
+
+---
+
+## Thank You!
+
+Every contribution - whether it's a bug fix, new theme, documentation improvement, or feature enhancement - helps make MapToPoster better for everyone.
+
+**Next Steps:**
+- Set up your development environment
+- Browse [open issues](https://github.com/originalankur/maptoposter/issues) for ideas
+- Join [discussions](https://github.com/originalankur/maptoposter/discussions) to share ideas
+- Read the [Architecture Overview](/reference/architecture) for deep technical details
+
+Happy mapping! 🗺️

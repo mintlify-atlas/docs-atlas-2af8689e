@@ -1,0 +1,277 @@
+---
+title: Resolution Guide
+description: Configure MapToPoster output dimensions for Instagram, 4K displays, print, and more
+---
+
+## Understanding Dimensions
+
+MapToPoster outputs images at **300 DPI** (dots per inch) for high-quality printing. The `--width` and `--height` flags specify dimensions in **inches**, which are then rendered at this resolution.
+
+**Formula**: `pixels = inches × 300 DPI`
+
+<Note>
+All dimension values below are in **inches** to be used with `-W` (width) and `-H` (height) flags.
+</Note>
+
+## Social Media Formats
+
+### Instagram
+
+<CodeGroup>
+```bash Instagram Post (Square)
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -W 3.6 -H 3.6
+# Output: 1080 × 1080 px
+```
+
+```bash Instagram Portrait
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -W 3.6 -H 4.5
+# Output: 1080 × 1350 px
+```
+
+```bash Instagram Story
+python create_map_poster.py \
+  -c "Barcelona" -C "Spain" \
+  -W 3.6 -H 6.4
+# Output: 1080 × 1920 px
+```
+</CodeGroup>
+
+| Format | Dimensions (inches) | Resolution (px) | Aspect Ratio |
+|--------|---------------------|-----------------|-------------|
+| Square Post | 3.6 × 3.6 | 1080 × 1080 | 1:1 |
+| Portrait Post | 3.6 × 4.5 | 1080 × 1350 | 4:5 |
+| Story / Reels | 3.6 × 6.4 | 1080 × 1920 | 9:16 |
+
+### Facebook & Twitter
+
+<CodeGroup>
+```bash Facebook Cover Photo
+python create_map_poster.py \
+  -c "London" -C "UK" \
+  -W 5.73 -H 2.13
+# Output: 1720 × 640 px
+```
+
+```bash Twitter Header
+python create_map_poster.py \
+  -c "Seattle" -C "USA" \
+  -W 5 -H 1.67
+# Output: 1500 × 500 px
+```
+</CodeGroup>
+
+| Platform | Type | Dimensions (inches) | Resolution (px) |
+|----------|------|---------------------|----------------|
+| Facebook | Cover Photo | 5.73 × 2.13 | 1720 × 640 |
+| Twitter/X | Header | 5 × 1.67 | 1500 × 500 |
+
+## Desktop Wallpapers
+
+### HD and 4K Displays
+
+<CodeGroup>
+```bash Full HD (1080p)
+python create_map_poster.py \
+  -c "New York" -C "USA" \
+  -W 6.4 -H 3.6
+# Output: 1920 × 1080 px
+```
+
+```bash 4K UHD (2160p)
+python create_map_poster.py \
+  -c "Dubai" -C "UAE" \
+  -W 12.8 -H 7.2
+# Output: 3840 × 2160 px
+```
+
+```bash 5K Retina
+python create_map_poster.py \
+  -c "San Francisco" -C "USA" \
+  -W 17.07 -H 9.6
+# Output: 5120 × 2880 px
+```
+
+```bash Ultrawide (21:9)
+python create_map_poster.py \
+  -c "Venice" -C "Italy" \
+  -W 11.47 -H 4.93
+# Output: 3440 × 1440 px
+```
+</CodeGroup>
+
+| Display Type | Dimensions (inches) | Resolution (px) | Aspect Ratio |
+|--------------|---------------------|-----------------|-------------|
+| **HD (1080p)** | 6.4 × 3.6 | 1920 × 1080 | 16:9 |
+| **4K UHD** | 12.8 × 7.2 | 3840 × 2160 | 16:9 |
+| **5K Retina** | 17.07 × 9.6 | 5120 × 2880 | 16:9 |
+| **Ultrawide QHD** | 11.47 × 4.93 | 3440 × 1440 | 21:9 |
+
+<Warning>
+The maximum dimensions are **20 × 20 inches** (6000 × 6000 px). Values exceeding this limit are automatically capped.
+</Warning>
+
+## Mobile Wallpapers
+
+### Phone Screens
+
+<CodeGroup>
+```bash iPhone (Modern)
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  -W 4.33 -H 9.36
+# Output: 1290 × 2796 px (iPhone 15 Pro)
+```
+
+```bash Android (Common)
+python create_map_poster.py \
+  -c "Mumbai" -C "India" \
+  -W 3.6 -H 6.4
+# Output: 1080 × 1920 px
+```
+</CodeGroup>
+
+| Device | Dimensions (inches) | Resolution (px) | Aspect Ratio |
+|--------|---------------------|-----------------|-------------|
+| iPhone 15 Pro | 4.33 × 9.36 | 1290 × 2796 | ~19.5:9 |
+| Standard Android | 3.6 × 6.4 | 1080 × 1920 | 16:9 |
+| iPhone 8/SE | 2.5 × 4.47 | 750 × 1334 | ~16:9 |
+
+## Print Formats
+
+### Standard Paper Sizes
+
+<CodeGroup>
+```bash A4 (Portrait)
+python create_map_poster.py \
+  -c "Barcelona" -C "Spain" \
+  -W 8.27 -H 11.69
+# Output: 2480 × 3508 px
+```
+
+```bash A3 (Portrait)
+python create_map_poster.py \
+  -c "Rome" -C "Italy" \
+  -W 11.69 -H 16.54
+# Output: 3508 × 4961 px
+```
+
+```bash US Letter (Portrait)
+python create_map_poster.py \
+  -c "Chicago" -C "USA" \
+  -W 8.5 -H 11
+# Output: 2550 × 3300 px
+```
+
+```bash US Tabloid (Portrait)
+python create_map_poster.py \
+  -c "Los Angeles" -C "USA" \
+  -W 11 -H 17
+# Output: 3300 × 5100 px
+```
+</CodeGroup>
+
+| Paper Size | Dimensions (inches) | Resolution (px) @ 300 DPI |
+|------------|---------------------|---------------------------|
+| **A6** | 4.13 × 5.83 | 1240 × 1748 |
+| **A5** | 5.83 × 8.27 | 1748 × 2480 |
+| **A4** | 8.27 × 11.69 | 2480 × 3508 |
+| **A3** | 11.69 × 16.54 | 3508 × 4961 |
+| **US Letter** | 8.5 × 11 | 2550 × 3300 |
+| **US Legal** | 8.5 × 14 | 2550 × 4200 |
+| **US Tabloid** | 11 × 17 | 3300 × 5100 |
+
+<Note>
+For print, always use the **default PNG format** at 300 DPI for best quality. Alternatively, use `--format pdf` or `--format svg` for vector output that scales infinitely.
+</Note>
+
+### Custom Print Sizes
+
+<CodeGroup>
+```bash Small Poster (12" × 16")
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  -W 12 -H 16
+# Output: 3600 × 4800 px (default)
+```
+
+```bash Medium Poster (18" × 24")
+python create_map_poster.py \
+  -c "Amsterdam" -C "Netherlands" \
+  -W 18 -H 24
+# EXCEEDS LIMIT: Capped to 20 × 20 max
+```
+
+```bash Square Poster (16" × 16")
+python create_map_poster.py \
+  -c "Marrakech" -C "Morocco" \
+  -W 16 -H 16
+# Output: 4800 × 4800 px
+```
+</CodeGroup>
+
+## Quick Reference Table
+
+All common use cases in one place:
+
+| Use Case | Width | Height | Resolution | Command |
+|----------|-------|--------|------------|--------|
+| **Instagram Square** | 3.6 | 3.6 | 1080×1080 | `-W 3.6 -H 3.6` |
+| **Mobile Wallpaper** | 3.6 | 6.4 | 1080×1920 | `-W 3.6 -H 6.4` |
+| **HD Desktop** | 6.4 | 3.6 | 1920×1080 | `-W 6.4 -H 3.6` |
+| **4K Desktop** | 12.8 | 7.2 | 3840×2160 | `-W 12.8 -H 7.2` |
+| **A4 Print** | 8.27 | 11.69 | 2480×3508 | `-W 8.27 -H 11.69` |
+| **Default Poster** | 12 | 16 | 3600×4800 | (default) |
+
+## Aspect Ratio Guide
+
+Choose dimensions based on your intended display:
+
+| Aspect Ratio | Common Use | Example Dimensions |
+|--------------|------------|--------------------|
+| **1:1** (Square) | Instagram, profile pics | 3.6 × 3.6 |
+| **4:5** (Portrait) | Instagram portrait | 3.6 × 4.5 |
+| **3:4** (Portrait) | Standard poster | 12 × 16 |
+| **16:9** (Landscape) | Desktop wallpaper | 12.8 × 7.2 |
+| **9:16** (Portrait) | Phone wallpaper | 3.6 × 6.4 |
+| **21:9** (Ultrawide) | Ultrawide monitor | 11.47 × 4.93 |
+
+## Vector Output for Printing
+
+For professional printing or scaling flexibility, use vector formats:
+
+```bash
+# SVG format (infinitely scalable)
+python create_map_poster.py \
+  -c "Paris" -C "France" \
+  --format svg
+
+# PDF format (print-ready)
+python create_map_poster.py \
+  -c "Tokyo" -C "Japan" \
+  --format pdf
+```
+
+<Info>
+Vector formats (SVG, PDF) ignore the DPI setting and can be scaled to any size without quality loss. Perfect for professional printing.
+</Info>
+
+## See Also
+
+<CardGroup cols={2}>
+  <Card title="Basic Usage" icon="rocket" href="/usage/basic-usage">
+    Getting started with common commands
+  </Card>
+  <Card title="Command Reference" icon="terminal" href="/usage/command-reference">
+    Complete command-line flag reference
+  </Card>
+  <Card title="Distance Guide" icon="map" href="/usage/distance-guide">
+    Choose the right map radius
+  </Card>
+  <Card title="Output Formats" icon="file" href="/usage/command-reference">
+    PNG, SVG, and PDF format details
+  </Card>
+</CardGroup>

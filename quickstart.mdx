@@ -1,80 +1,425 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quick Start
+description: Create your first map poster in minutes with this step-by-step tutorial
 ---
 
-## Get started in three steps
-
-Get your documentation site running locally and make your first customization.
-
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+This guide will walk you through creating your first map poster with MapToPoster. You'll learn the basic workflow and explore some of the customization options.
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  Make sure you've completed the [installation](/installation) before starting this tutorial.
 </Note>
+
+## Your First Poster
+
+Let's create a simple poster of Paris with the default terracotta theme.
+
+<Steps>
+  <Step title="Basic command">
+    Run the following command to generate a Paris poster:
+
+    <CodeGroup>
+    ```bash With uv
+    uv run ./create_map_poster.py --city "Paris" --country "France"
+    ```
+
+    ```bash With pip
+    python create_map_poster.py --city "Paris" --country "France"
+    ```
+    </CodeGroup>
+
+    <Note>
+      The first run may take 30-60 seconds as it downloads map data from OpenStreetMap. Subsequent runs with the same city will be much faster due to caching.
+    </Note>
+  </Step>
+
+  <Step title="Watch the progress">
+    You'll see output showing the generation process:
+
+    ```text
+    ==================================================
+    City Map Poster Generator
+    ==================================================
+    Looking up coordinates...
+    ✓ Found: Paris, Île-de-France, France métropolitaine, France
+    ✓ Coordinates: 48.8566, 2.3522
+    ✓ Loaded theme: Terracotta
+      Mediterranean warmth - burnt orange and clay tones on cream
+
+    Generating map for Paris, France...
+    Fetching map data |████████████| 3/3
+    ✓ All data retrieved successfully!
+    Rendering map...
+    Applying road hierarchy colors...
+    Saving to posters/paris_terracotta_20260304_143022.png...
+    ✓ Done! Poster saved as posters/paris_terracotta_20260304_143022.png
+    ```
+  </Step>
+
+  <Step title="View your poster">
+    Your poster is saved in the `posters/` directory with a timestamped filename:
+
+    ```text
+    posters/paris_terracotta_20260304_143022.png
+    ```
+
+    The file format is: `{city}_{theme}_{YYYYMMDD_HHMMSS}.png`
+  </Step>
+</Steps>
+
+## Customize Your Poster
+
+Now let's explore different customization options.
+
+### Choose a Different Theme
+
+MapToPoster includes 17 built-in themes. List them all:
+
+<CodeGroup>
+```bash With uv
+uv run ./create_map_poster.py --list-themes
+```
+
+```bash With pip
+python create_map_poster.py --list-themes
+```
+</CodeGroup>
+
+Try a different theme using the `-t` or `--theme` flag:
+
+```bash
+python create_map_poster.py -c "New York" -C "USA" -t noir
+```
+
+<CardGroup cols={3}>
+  <Card title="noir" icon="moon">
+    Pure black background with white roads - perfect for minimalist aesthetics
+  </Card>
+  
+  <Card title="midnight_blue" icon="star">
+    Navy background with gold roads - elegant and sophisticated
+  </Card>
+  
+  <Card title="neon_cyberpunk" icon="bolt">
+    Dark background with electric pink/cyan - futuristic vibe
+  </Card>
+  
+  <Card title="japanese_ink" icon="brush">
+    Minimalist ink wash style - zen and artistic
+  </Card>
+  
+  <Card title="blueprint" icon="compass-drafting">
+    Architectural blueprint aesthetic - technical and precise
+  </Card>
+  
+  <Card title="sunset" icon="sun">
+    Warm oranges and pinks - vibrant and energetic
+  </Card>
+</CardGroup>
+
+### Adjust Map Coverage
+
+Control how much of the city is shown with the `-d` or `--distance` parameter (in meters):
+
+```bash
+# Small area - focus on city center (4-6km radius)
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+
+# Medium area - downtown and surroundings (8-12km radius)
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+
+# Large area - full metropolitan view (15-20km radius)
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+```
+
+**Distance Guide:**
+
+| Distance | Best for | Example Cities |
+|----------|----------|----------------|
+| 4000-6000m | Small/dense cities with intricate patterns | Venice canals, Amsterdam center |
+| 8000-12000m | Medium cities, focused downtown areas | Paris, Barcelona, San Francisco |
+| 15000-20000m | Large metros, full city overview | Tokyo, Mumbai, New York |
+
+### Custom Dimensions
+
+Change the poster size using `-W` (width) and `-H` (height) in inches:
+
+```bash
+# Square Instagram post (1080x1080 at 300 DPI)
+python create_map_poster.py -c "Paris" -C "France" -W 3.6 -H 3.6
+
+# Mobile wallpaper (1080x1920 at 300 DPI)
+python create_map_poster.py -c "Tokyo" -C "Japan" -W 3.6 -H 6.4
+
+# 4K wallpaper (3840x2160 at 300 DPI)
+python create_map_poster.py -c "Dubai" -C "UAE" -W 12.8 -H 7.2
+
+# A4 print size
+python create_map_poster.py -c "London" -C "UK" -W 8.3 -H 11.7
+```
+
+**Resolution Reference (300 DPI):**
+
+| Format | Resolution (px) | Dimensions (-W / -H) |
+|--------|-----------------|----------------------|
+| Instagram Post | 1080 x 1080 | 3.6 x 3.6 |
+| Mobile Wallpaper | 1080 x 1920 | 3.6 x 6.4 |
+| HD Wallpaper | 1920 x 1080 | 6.4 x 3.6 |
+| 4K Wallpaper | 3840 x 2160 | 12.8 x 7.2 |
+| A4 Print | 2480 x 3508 | 8.3 x 11.7 |
+| Default Poster | 3600 x 4800 | 12 x 16 |
+
+## Multilingual Posters
+
+Create posters with city names in their native scripts using Google Fonts.
+
+### Japanese Example
+
+```bash
+python create_map_poster.py \
+  --city "Tokyo" \
+  --country "Japan" \
+  --display-city "東京" \
+  --display-country "日本" \
+  --font-family "Noto Sans JP" \
+  --theme japanese_ink
+```
+
+### Arabic Example
+
+```bash
+python create_map_poster.py \
+  -c "Dubai" \
+  -C "UAE" \
+  -dc "دبي" \
+  -dC "الإمارات" \
+  --font-family "Cairo" \
+  -t midnight_blue
+```
+
+### Korean Example
+
+```bash
+python create_map_poster.py \
+  -c "Seoul" \
+  -C "South Korea" \
+  -dc "서울" \
+  -dC "대한민국" \
+  --font-family "Noto Sans KR" \
+  -t neon_cyberpunk
+```
+
+<Note>
+  Fonts are automatically downloaded from Google Fonts and cached locally in `fonts/cache/`. The tool automatically detects non-Latin scripts and applies appropriate spacing.
+</Note>
+
+## Real-World Examples
+
+Here are some curated examples showcasing different city patterns:
+
+### Grid Patterns
+
+Cities with distinctive grid layouts:
+
+<CodeGroup>
+```bash Manhattan
+# Famous street grid of New York
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+```
+
+```bash Barcelona
+# Eixample district's perfect grid
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+```
+</CodeGroup>
+
+### Waterfront Cities
+
+Cities with beautiful canal or coastal features:
+
+<CodeGroup>
+```bash Venice
+# Intricate canal network
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+```
+
+```bash Amsterdam
+# Concentric canal rings
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t ocean -d 6000
+```
+
+```bash Dubai
+# Palm Island and coastline
+python create_map_poster.py -c "Dubai" -C "UAE" -t midnight_blue -d 15000
+```
+</CodeGroup>
+
+### Radial Patterns
+
+Cities with circular or radial layouts:
+
+<CodeGroup>
+```bash Paris
+# Haussmann boulevards radiating from Arc de Triomphe
+python create_map_poster.py -c "Paris" -C "France" -t pastel_dream -d 10000
+```
+
+```bash Moscow
+# Concentric ring roads
+python create_map_poster.py -c "Moscow" -C "Russia" -t noir -d 12000
+```
+</CodeGroup>
+
+### Organic Patterns
+
+Cities with organic, maze-like street layouts:
+
+<CodeGroup>
+```bash Tokyo
+# Dense organic street network
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+```
+
+```bash Marrakech
+# Medina's labyrinthine streets
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+```
+</CodeGroup>
+
+## Advanced Options
+
+### Override Coordinates
+
+Focus on a specific location instead of the city center:
+
+```bash
+# Center on Statue of Liberty
+python create_map_poster.py \
+  --city "New York" \
+  --country "USA" \
+  --latitude 40.776676 \
+  --longitude -73.971321 \
+  --theme noir
+```
+
+### Generate All Themes
+
+Create posters with every available theme:
+
+```bash
+python create_map_poster.py -c "Paris" -C "France" --all-themes
+```
+
+This generates 17 posters, one for each theme.
+
+### Different Output Formats
+
+Export as PNG (default), SVG, or PDF:
+
+```bash
+# Vector format for scaling
+python create_map_poster.py -c "Paris" -C "France" --format svg
+
+# PDF for professional printing
+python create_map_poster.py -c "London" -C "UK" --format pdf -W 16 -H 20
+```
+
+## Understanding the Output
+
+Each poster includes:
+
+1. **Map layers** (from bottom to top):
+   - Background color
+   - Water features (rivers, bays, coastlines)
+   - Parks and green spaces
+   - Road network with hierarchical styling:
+     - **Motorways**: Thickest, darkest lines
+     - **Primary roads**: Thick lines
+     - **Secondary roads**: Medium lines
+     - **Tertiary roads**: Thin lines
+     - **Residential streets**: Thinnest, lightest lines
+
+2. **Gradient fades** at top and bottom for visual depth
+
+3. **Typography** with:
+   - City name (large, spaced letters for Latin scripts)
+   - Decorative line separator
+   - Country name
+   - Coordinates (latitude/longitude)
+   - OpenStreetMap attribution (bottom right)
+
+## Tips for Best Results
+
+<CardGroup cols={2}>
+  <Card title="Match theme to city character" icon="palette">
+    Use `blueprint` for Venice canals, `japanese_ink` for Tokyo, `terracotta` for Mediterranean cities, or `neon_cyberpunk` for modern Asian cities.
+  </Card>
+  
+  <Card title="Adjust distance for city pattern" icon="ruler">
+    Dense historic centers look best at 4-6km. Grid cities shine at 8-12km. Large metros need 15-20km to show their full character.
+  </Card>
+  
+  <Card title="Consider the final use" icon="image">
+    Use square dimensions (3.6x3.6) for Instagram, portrait (12x16) for wall art, or landscape (12.8x7.2) for desktop wallpapers.
+  </Card>
+  
+  <Card title="Experiment with themes" icon="flask">
+    Use `--all-themes` to generate all 17 variations at once, then pick your favorite. Cached data makes this fast!
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Geocoding returns wrong location">
+    If the geocoder finds the wrong city, override with specific coordinates:
+    
+    ```bash
+    python create_map_poster.py \
+      --city "Springfield" \
+      --country "USA" \
+      --latitude 39.7817 \
+      --longitude -89.6501
+    ```
+  </Accordion>
+
+  <Accordion title="Map looks empty or sparse">
+    - Increase the distance: `-d 20000`
+    - Check if you're in a rural area with fewer roads
+    - Try a different city or coordinates
+  </Accordion>
+
+  <Accordion title="Text is too large or truncated">
+    The tool auto-scales for long city names, but you can:
+    - Use shorter display names: `-dc "NYC"`
+    - Increase poster width/height
+  </Accordion>
+
+  <Accordion title="Slow generation">
+    First run downloads map data. Speed up future runs:
+    - Data is automatically cached in `cache/` directory
+    - Same city + distance combination uses cached data
+    - Try `--all-themes` to reuse downloaded data for multiple posters
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you've created your first posters, explore more:
+
+<CardGroup cols={2}>
+  <Card title="CLI Reference" icon="terminal" href="/usage/command-reference">
+    Complete reference of all command-line options
+  </Card>
+  
+  <Card title="Themes" icon="palette" href="/guides/themes">
+    Browse all 17 themes and learn to create custom themes
+  </Card>
+  
+  <Card title="Examples" icon="images" href="/examples/gallery">
+    Gallery of curated city posters with exact commands
+  </Card>
+  
+  <Card title="Advanced Usage" icon="gear" href="/guides/advanced-examples">
+    Coordinate overrides, custom fonts, and more
+  </Card>
+</CardGroup>

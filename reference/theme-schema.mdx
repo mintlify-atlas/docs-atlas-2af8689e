@@ -1,0 +1,274 @@
+---
+title: Theme Schema
+description: Complete JSON schema for MapToPoster theme files with all color fields and configuration options
+---
+
+## Overview
+
+Theme files define the color palette and visual style for map posters. They are JSON files stored in the `themes/` directory and must end with a `.json` extension.
+
+## Schema Definition
+
+### File Location
+
+```
+themes/{theme_name}.json
+```
+
+Example: `themes/terracotta.json`, `themes/noir.json`
+
+### Required Fields
+
+All theme files must include the following fields:
+
+<ParamField path="name" type="string" required>
+  Display name of the theme (e.g., "Terracotta", "Neon Cyberpunk")
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  Short description of the theme's aesthetic and color palette
+</ParamField>
+
+<ParamField path="bg" type="string" required>
+  Background color in hex format (e.g., "#F5EDE4")
+  
+  Used for the poster background and empty space around the map.
+</ParamField>
+
+<ParamField path="text" type="string" required>
+  Text color in hex format (e.g., "#8B4513")
+  
+  Used for city name, country name, coordinates, and attribution text.
+</ParamField>
+
+<ParamField path="gradient_color" type="string" required>
+  Color for gradient fade effects in hex format
+  
+  Applied at top and bottom of the map to create smooth transitions. Typically matches the background color.
+</ParamField>
+
+<ParamField path="water" type="string" required>
+  Water feature color in hex format (e.g., "#A8C4C4")
+  
+  Used for rivers, lakes, bays, straits, and other water bodies.
+</ParamField>
+
+<ParamField path="parks" type="string" required>
+  Parks and green spaces color in hex format (e.g., "#E8E0D0")
+  
+  Used for parks, grass areas, and other leisure/green spaces.
+</ParamField>
+
+### Road Hierarchy Colors
+
+Themes use a hierarchical color system for different road types, from major highways to small residential streets:
+
+<ParamField path="road_motorway" type="string" required>
+  Motorway and highway color in hex format
+  
+  Applied to:
+  - motorway
+  - motorway_link
+  
+  Typically the boldest/brightest road color.
+</ParamField>
+
+<ParamField path="road_primary" type="string" required>
+  Primary road color in hex format
+  
+  Applied to:
+  - trunk
+  - trunk_link
+  - primary
+  - primary_link
+  
+  Major roads connecting cities and regions.
+</ParamField>
+
+<ParamField path="road_secondary" type="string" required>
+  Secondary road color in hex format
+  
+  Applied to:
+  - secondary
+  - secondary_link
+  
+  Important roads within cities.
+</ParamField>
+
+<ParamField path="road_tertiary" type="string" required>
+  Tertiary road color in hex format
+  
+  Applied to:
+  - tertiary
+  - tertiary_link
+  
+  Local connector roads.
+</ParamField>
+
+<ParamField path="road_residential" type="string" required>
+  Residential street color in hex format
+  
+  Applied to:
+  - residential
+  - living_street
+  - unclassified
+  
+  Neighborhood streets and local roads.
+</ParamField>
+
+<ParamField path="road_default" type="string" required>
+  Default road color in hex format
+  
+  Fallback color for any road types not covered by the above categories.
+</ParamField>
+
+## Complete Example
+
+<CodeGroup>
+```json Terracotta Theme
+{
+  "name": "Terracotta",
+  "description": "Mediterranean warmth - burnt orange and clay tones on cream",
+  "bg": "#F5EDE4",
+  "text": "#8B4513",
+  "gradient_color": "#F5EDE4",
+  "water": "#A8C4C4",
+  "parks": "#E8E0D0",
+  "road_motorway": "#A0522D",
+  "road_primary": "#B8653A",
+  "road_secondary": "#C9846A",
+  "road_tertiary": "#D9A08A",
+  "road_residential": "#E5C4B0",
+  "road_default": "#D9A08A"
+}
+```
+
+```json Blueprint Theme
+{
+  "name": "Blueprint",
+  "description": "Classic architectural blueprint - technical drawing aesthetic",
+  "bg": "#1A3A5C",
+  "text": "#E8F4FF",
+  "gradient_color": "#1A3A5C",
+  "water": "#0F2840",
+  "parks": "#1E4570",
+  "road_motorway": "#E8F4FF",
+  "road_primary": "#C5DCF0",
+  "road_secondary": "#9FC5E8",
+  "road_tertiary": "#7BAED4",
+  "road_residential": "#5A96C0",
+  "road_default": "#7BAED4"
+}
+```
+
+```json Neon Cyberpunk Theme
+{
+  "name": "Neon Cyberpunk",
+  "description": "Dark background with electric pink/cyan - bold night city vibes",
+  "bg": "#0D0D1A",
+  "text": "#00FFFF",
+  "gradient_color": "#0D0D1A",
+  "water": "#0A0A15",
+  "parks": "#151525",
+  "road_motorway": "#FF00FF",
+  "road_primary": "#00FFFF",
+  "road_secondary": "#00C8C8",
+  "road_tertiary": "#0098A0",
+  "road_residential": "#006870",
+  "road_default": "#0098A0"
+}
+```
+</CodeGroup>
+
+## Design Guidelines
+
+### Color Relationships
+
+<CardGroup cols={2}>
+  <Card title="Background & Text">
+    Ensure sufficient contrast between `bg` and `text` for readability. The text appears at the bottom of the poster with city name, country, and coordinates.
+  </Card>
+  
+  <Card title="Road Hierarchy">
+    Use a gradual color progression from `road_motorway` (boldest) to `road_residential` (subtlest) to create visual hierarchy and depth.
+  </Card>
+  
+  <Card title="Water & Parks">
+    These should be distinguishable from both the background and roads while complementing the overall color scheme.
+  </Card>
+  
+  <Card title="Gradients">
+    The `gradient_color` typically matches `bg` to create seamless fade effects at the top and bottom of the map.
+  </Card>
+</CardGroup>
+
+### Theme Styles
+
+Common theme approaches:
+
+- **Monochromatic**: Single hue with varying lightness (e.g., Blueprint, Midnight Blue)
+- **Analogous**: Adjacent colors on the color wheel (e.g., Terracotta, Warm Beige)
+- **Complementary**: Opposite colors for high contrast (e.g., Neon Cyberpunk)
+- **Natural**: Earth tones and organic colors (e.g., Forest, Autumn)
+- **Technical**: High contrast, geometric feel (e.g., Blueprint, Noir)
+
+## Validation
+
+### Color Format
+
+All color fields must use 6-digit hex format with hash symbol:
+- Valid: `"#FF0000"`, `"#1A2B3C"`
+- Invalid: `"FF0000"`, `"#FFF"`, `"red"`
+
+### Required Fields
+
+If any required field is missing, the theme will fail to load and fall back to the default terracotta theme.
+
+## Loading Themes
+
+Themes can be loaded in multiple ways:
+
+<CodeGroup>
+```python Programmatically
+from create_map_poster import load_theme
+
+theme = load_theme("noir")
+print(theme["name"])  # "Noir"
+print(theme["bg"])    # "#1C1C1C"
+```
+
+```bash Command Line
+# Generate poster with specific theme
+python create_map_poster.py -c "Tokyo" -C "Japan" -t neon_cyberpunk
+
+# List all available themes
+python create_map_poster.py --list-themes
+
+# Generate posters for all themes
+python create_map_poster.py -c "Paris" -C "France" --all-themes
+```
+</CodeGroup>
+
+## Built-in Themes
+
+MapToPoster includes 17 built-in themes:
+
+- autumn
+- blueprint
+- contrast_zones
+- copper_patina
+- emerald
+- forest
+- gradient_roads
+- japanese_ink
+- midnight_blue
+- monochrome_blue
+- neon_cyberpunk
+- noir
+- ocean
+- pastel_dream
+- sunset
+- terracotta (default)
+- warm_beige
+
+All themes follow this exact schema structure.

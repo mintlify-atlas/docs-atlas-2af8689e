@@ -1,0 +1,218 @@
+---
+title: Basic Usage
+description: Getting started with MapToPoster - basic commands and common usage patterns
+---
+
+## Quick Start
+
+Generate a map poster with just two required arguments: city and country.
+
+```bash
+python create_map_poster.py --city "Paris" --country "France"
+```
+
+This creates a poster with default settings:
+- **Theme**: terracotta (warm Mediterranean tones)
+- **Distance**: 18,000 meters (18km radius)
+- **Size**: 12" × 16" inches
+- **Resolution**: 300 DPI (PNG format)
+
+## Basic Command Structure
+
+```bash
+python create_map_poster.py --city <city> --country <country> [options]
+```
+
+### Using uv (Recommended)
+
+If you're using [uv](https://docs.astral.sh/uv/) for dependency management:
+
+```bash
+uv run ./create_map_poster.py --city "Paris" --country "France"
+```
+
+The `uv run` prefix automatically manages the virtual environment and dependencies.
+
+## Required Arguments
+
+<ParamField path="--city" type="string" required>
+  City name used for geocoding. The tool uses OpenStreetMap's Nominatim service to find coordinates.
+  
+  **Aliases**: `-c`
+  
+  **Examples**: `"New York"`, `"Tokyo"`, `"Barcelona"`
+</ParamField>
+
+<ParamField path="--country" type="string" required>
+  Country name used for geocoding to disambiguate city names.
+  
+  **Aliases**: `-C`
+  
+  **Examples**: `"USA"`, `"Japan"`, `"Spain"`
+</ParamField>
+
+## Common Usage Patterns
+
+### Simple Poster Generation
+
+```bash
+# Default theme (terracotta)
+python create_map_poster.py -c "Paris" -C "France"
+
+# With a different theme
+python create_map_poster.py -c "New York" -C "USA" -t noir
+
+# Adjust map coverage area
+python create_map_poster.py -c "Venice" -C "Italy" -d 6000
+```
+
+### Combine Theme and Distance
+
+```bash
+# Manhattan grid with noir theme
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+
+# Venice canals with blueprint theme (smaller radius for detail)
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+
+# Tokyo sprawl with Japanese ink theme (larger radius)
+python create_map_poster.py -c "Tokyo" -C "Japan" -t japanese_ink -d 15000
+```
+
+### Custom Dimensions
+
+<Note>
+Use custom dimensions to match specific print sizes or screen resolutions. All dimensions are in inches at 300 DPI.
+</Note>
+
+```bash
+# Square Instagram post (3.6" × 3.6" = 1080×1080px at 300 DPI)
+python create_map_poster.py -c "Paris" -C "France" -W 3.6 -H 3.6
+
+# 4K desktop wallpaper (12.8" × 7.2" = 3840×2160px)
+python create_map_poster.py -c "Tokyo" -C "Japan" -W 12.8 -H 7.2
+
+# A4 print size (8.3" × 11.7")
+python create_map_poster.py -c "Barcelona" -C "Spain" -W 8.3 -H 11.7
+```
+
+## Discovering Themes
+
+List all available themes with descriptions:
+
+```bash
+python create_map_poster.py --list-themes
+```
+
+**Output example:**
+```
+Available Themes:
+------------------------------------------------------------
+  noir
+    Noir
+    Pure black background, white roads
+
+  midnight_blue
+    Midnight Blue
+    Navy background with gold roads
+
+  terracotta
+    Terracotta
+    Mediterranean warmth - burnt orange and clay tones on cream
+```
+
+### Generate All Themes at Once
+
+```bash
+python create_map_poster.py -c "Paris" -C "France" --all-themes
+```
+
+This creates separate posters for every theme in the `themes/` directory.
+
+## Output Location
+
+Posters are saved to the `posters/` directory with automatic timestamping:
+
+```
+posters/
+├── paris_terracotta_20260118_140807.png
+├── paris_noir_20260118_141032.png
+└── tokyo_japanese_ink_20260118_142446.png
+```
+
+**Filename format**: `{city}_{theme}_{YYYYMMDD_HHMMSS}.{format}`
+
+## Override Center Coordinates
+
+Manually specify exact coordinates instead of geocoding:
+
+```bash
+# Central Park, NYC (latitude and longitude)
+python create_map_poster.py -c "New York" -C "USA" -lat 40.776676 -long -73.971321
+
+# Supports various coordinate formats
+python create_map_poster.py -c "London" -C "UK" -lat "51.5074° N" -long "0.1278° W"
+```
+
+<Warning>
+When using `--latitude` and `--longitude`, both must be provided together. The geocoding service is bypassed completely.
+</Warning>
+
+## Examples by City Type
+
+### Grid Pattern Cities
+
+```bash
+# Manhattan's famous grid
+python create_map_poster.py -c "New York" -C "USA" -t noir -d 12000
+
+# Barcelona's Eixample district
+python create_map_poster.py -c "Barcelona" -C "Spain" -t warm_beige -d 8000
+```
+
+### Waterfront Cities
+
+```bash
+# San Francisco peninsula
+python create_map_poster.py -c "San Francisco" -C "USA" -t sunset -d 10000
+
+# Sydney harbour
+python create_map_poster.py -c "Sydney" -C "Australia" -t ocean -d 12000
+```
+
+### Historic/Organic Cities
+
+```bash
+# Rome's ancient streets
+python create_map_poster.py -c "Rome" -C "Italy" -t warm_beige -d 8000
+
+# Marrakech medina maze
+python create_map_poster.py -c "Marrakech" -C "Morocco" -t terracotta -d 5000
+```
+
+### Canal Cities
+
+```bash
+# Venice canal network (small radius for detail)
+python create_map_poster.py -c "Venice" -C "Italy" -t blueprint -d 4000
+
+# Amsterdam concentric canals
+python create_map_poster.py -c "Amsterdam" -C "Netherlands" -t ocean -d 6000
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Command Reference" icon="terminal" href="/usage/command-reference">
+    Complete list of all command-line flags and options
+  </Card>
+  <Card title="Resolution Guide" icon="image" href="/usage/resolution-guide">
+    Configure dimensions for Instagram, 4K, print, and more
+  </Card>
+  <Card title="Distance Guide" icon="map" href="/usage/distance-guide">
+    Choose the right map radius for different city types
+  </Card>
+  <Card title="Themes" icon="palette" href="/guides/themes">
+    Explore all available color themes
+  </Card>
+</CardGroup>
